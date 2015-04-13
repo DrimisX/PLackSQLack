@@ -1,0 +1,59 @@
+/*By Jasmyn Newton */
+
+CREATE TABLE Game (
+	gameID VARCHAR(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	gameDate DATE NOT NULL
+	);
+
+CREATE TABLE GameHistory (
+	gameID VARCHAR(10) NOT NULL PRIMARY KEY,
+	playerID VARCHAR(10) NOT NULL,
+	winLossTie VARCHAR(5),
+	CONSTRAINT fk_gameID FOREIGN KEY (gameID)
+		REFERENCES Game(gameID)
+	);
+
+CREATE TABLE PlayerGame (
+	gameID VARCHAR(10) NOT NULL,
+	playerID VARCHAR(10) NOT NULL,
+	handValue INT DEFAULT 0,
+	CONSTRAINT pk_playerGame PRIMARY KEY (gameID,playerID),
+	CONSTRAINT fk_gameID FOREIGN KEY (gameID)
+		REFERENCES Game(gameID),
+	CONSTRAINT fk_playerID FOREIGN KEY (playerID)
+		REFERENCES Player(playerID)
+	);
+
+CREATE TABLE Player (
+	playerID VARCHAR(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	accountName VARCHAR(25) NOT NULL,
+	password VARCHAR(10) NOT NULL,
+	firstName VARCHAR(25) NOT NULL,
+	lastName VARCHAR(50) NOT NULL,
+	email VARCHAR(60) NOT NULL
+	CONSTRAINT uc_player UNIQUE (accountName, email)
+	);
+
+CREATE TABLE PlayerStats (
+	gamesWon INT DEFAULT 0,
+	gamesTied INT DEFAULT 0,
+	gamesLost INT DEFAULT 0,
+	playerID VARCHAR(10) NOT NULL PRIMARY KEY,
+	CONSTRAINT fk_playerID FOREIGN KEY (playerID)
+		REFERENCES Player(playerID)
+	);
+
+CREATE TABLE Deck (
+	cardID VARCHAR(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	cardName VARCHAR(10) NOT NULL,
+	cardValue INT NOT NULL,
+	cardSuit VARCHAR(10) NOT NULL,
+	CONSTRAINT chk_suit CHECK (cardSuit IN ('Hearts', 'Diamonds', 'Spades', 'Clubs'))
+	);
+
+CREATE TABLE GameDeck (
+	cardID VARCHAR(10) NOT NULL PRIMARY KEY,
+	inUse BOOLEAN DEFAULT true,
+	CONSTRAINT fk_cardID FOREIGN KEY (cardID)
+		REFERENCES Deck(cardID)
+	);
