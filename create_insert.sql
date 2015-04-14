@@ -95,3 +95,14 @@ INTO Deck (cardFace, cardSuit) VALUES('Q', 'Clubs')
 INTO Deck (cardFace, cardSuit) VALUES('K', 'Clubs')
 INTO Deck (cardFace, cardSuit) VALUES('A', 'Clubs')
 SELECT * FROM dual;
+
+CREATE SEQUENCE seq_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+
+CREATE OR REPLACE TRIGGER insert_cards
+BEFORE INSERT ON ShuffledDeck
+FOR EACH ROW
+BEGIN
+  SELECT seq_id.NEXTVAL
+  INTO   :new.position
+  FROM   dual;
+END;
