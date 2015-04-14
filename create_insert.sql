@@ -40,7 +40,7 @@ CREATE TABLE ShuffledDeck (
 	cardSuit VARCHAR(10) NOT NULL
 	);
 
-/* INSERT VALUES */
+
 INSERT ALL
 INTO Deck (cardFace, cardSuit) VALUES('2', 'Hearts')
 INTO Deck (cardFace, cardSuit) VALUES('3', 'Hearts')
@@ -94,6 +94,14 @@ INTO Deck (cardFace, cardSuit) VALUES('J', 'Clubs')
 INTO Deck (cardFace, cardSuit) VALUES('Q', 'Clubs')
 INTO Deck (cardFace, cardSuit) VALUES('K', 'Clubs')
 INTO Deck (cardFace, cardSuit) VALUES('A', 'Clubs')
+SELECT * FROM dual;
+
+
+INSERT ALL
+INTO Player VALUES('Ashika123','sherocks','Ashika','Shallow','ashika@email.com')
+INTO Player VALUES('Jasmyn234','shekicks','Jasmyn','Newton','jasmyn@email.com')
+INTO Player VALUES('Dylan365','hethrows','Dylan','Huculak','dylan@email.com')
+INTO Player VALUES('Dealer4','hetakes','Shannon','Smith','dealer@email.com')
 SELECT * FROM dual;
 
 CREATE SEQUENCE seq_id START WITH 1 INCREMENT BY 1 MAXVALUE 52 CYCLE;
