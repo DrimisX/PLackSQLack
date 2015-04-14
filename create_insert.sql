@@ -46,6 +46,16 @@ CREATE TABLE ShuffledDeck (
 	cardSuit VARCHAR(10) NOT NULL
 	);
 
+CREATE TABLE GameErrorLog (
+	errorDateTime DATE DEFAULT SYSDATE PRIMARY KEY,
+	errorCode VARCHAR(25) NOT NULL,
+	errorMessage VARCHAR(250) NOT NULL,
+	relatedFunctionality VARCHAR(250) NOT NULL,
+	gameID RAW(16) NOT NULL,
+	CONSTRAINT fk_gameID2 FOREIGN KEY (gameID)
+		REFERENCES Game(gameID) ON DELETE CASCADE
+	);
+
 INSERT ALL
 INTO Deck (cardFace, cardSuit) VALUES('2', 'Hearts')
 INTO Deck (cardFace, cardSuit) VALUES('3', 'Hearts')
