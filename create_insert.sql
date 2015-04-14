@@ -1,8 +1,43 @@
+CREATE TABLE Game (
+	gameID RAW(16) DEFAULT SYS_GUID() PRIMARY KEY,
+	gameDate DATE DEFAULT SYSDATE,
+	player1ID VARCHAR(10) NOT NULL,
+	player2ID VARCHAR(10),
+	player3ID VARCHAR(10),
+	player4ID VARCHAR(10)
+	);
+
+CREATE TABLE PlayerGame (
+	gameID RAW(16) NOT NULL,
+	accountName VARCHAR(25) NOT NULL,
+	winner VARCHAR(2) DEFAULT 'N' NOT NULL,
+	CONSTRAINT pk_playerGame PRIMARY KEY (gameID, accountName),
+	CONSTRAINT fk_gameID FOREIGN KEY (gameID)
+		REFERENCES Game(gameID),
+	CONSTRAINT fk_accountName FOREIGN KEY (accountName)
+		REFERENCES Player(accountName)
+	);
+
+CREATE TABLE Player (
+	accountName VARCHAR(25) NOT NULL PRIMARY KEY,
+	password VARCHAR(10) NOT NULL,
+	firstName VARCHAR(25) NOT NULL,
+	lastName VARCHAR(50) NOT NULL,
+	email VARCHAR(60) NOT NULL,
+	CONSTRAINT uc_player UNIQUE (email)
+	);
+
 CREATE TABLE Deck (
 	cardFace VARCHAR(10) NOT NULL,
 	cardSuit VARCHAR(10) NOT NULL,
-	CONSTRAINT deck_pk PRIMARY KEY (cardFace, cardSuit),
+	CONSTRAINT deck_pk PRIMARY KEY (cardFace, cardSuit)
 	CONSTRAINT chk_suit CHECK (cardSuit IN ('Hearts', 'Diamonds', 'Spades', 'Clubs'))
+	);
+
+CREATE TABLE ShuffledDeck (
+	position INT NOT NULL PRIMARY KEY,
+	cardFace VARCHAR(10) NOT NULL,
+	cardSuit VARCHAR(10) NOT NULL
 	);
 
 /* INSERT VALUES */
