@@ -1,7 +1,7 @@
 CREATE TABLE Game (
 	gameID RAW(16) DEFAULT SYS_GUID() PRIMARY KEY,
 	gameDate DATE DEFAULT SYSDATE,
-	player1ID VARCHAR(10) NOT NULL,
+	player1ID VARCHAR(10),
 	player2ID VARCHAR(10),
 	player3ID VARCHAR(10),
 	player4ID VARCHAR(10)
@@ -13,9 +13,9 @@ CREATE TABLE PlayerGame (
 	winner VARCHAR(2) DEFAULT 'N' NOT NULL,
 	CONSTRAINT pk_playerGame PRIMARY KEY (gameID, accountName),
 	CONSTRAINT fk_gameID FOREIGN KEY (gameID)
-		REFERENCES Game(gameID),
+		REFERENCES Game(gameID) ON DELETE CASCADE,
 	CONSTRAINT fk_accountName FOREIGN KEY (accountName)
-		REFERENCES Player(accountName)
+		REFERENCES Player(accountName) ON DELETE CASCADE
 	);
 
 CREATE TABLE Player (
