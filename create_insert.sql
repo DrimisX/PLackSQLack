@@ -1,3 +1,9 @@
+DROP TABLE Game;
+DROP TABLE Player;
+DROP TABLE PlayerGame;
+DROP TABLE Deck;
+DROP TABLE ShuffledDeck;
+
 CREATE TABLE Game (
 	gameID RAW(16) DEFAULT SYS_GUID() PRIMARY KEY,
 	gameDate DATE DEFAULT SYSDATE,
@@ -30,7 +36,7 @@ CREATE TABLE Player (
 CREATE TABLE Deck (
 	cardFace VARCHAR(10) NOT NULL,
 	cardSuit VARCHAR(10) NOT NULL,
-	CONSTRAINT deck_pk PRIMARY KEY (cardFace, cardSuit)
+	CONSTRAINT deck_pk PRIMARY KEY (cardFace, cardSuit),
 	CONSTRAINT chk_suit CHECK (cardSuit IN ('Hearts', 'Diamonds', 'Spades', 'Clubs'))
 	);
 
@@ -39,7 +45,6 @@ CREATE TABLE ShuffledDeck (
 	cardFace VARCHAR(10) NOT NULL,
 	cardSuit VARCHAR(10) NOT NULL
 	);
-
 
 INSERT ALL
 INTO Deck (cardFace, cardSuit) VALUES('2', 'Hearts')
