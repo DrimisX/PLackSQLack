@@ -31,16 +31,16 @@ CREATE OR REPLACE PACKAGE BODY deck_package IS
   FUNCTION get_card_value
 	  ( face_value IN VARCHAR		-- The face value of the card
 		  hand_value IN NUMBER )	-- The hand value before this card is added
-	  RETURN number 						-- Return type
+	  RETURN number 			-- Return type
 	  IS
 	
   DECLARE
-	  value NUMBER;							-- The numerical value to be returned
+	  value NUMBER;				-- The numerical value to be returned
 	
   BEGIN
 	  -- Assign proper value based on face_value
 	  value := 
-	  CASE face_value			-- Face Values:
+	  CASE face_value		-- Face Values:
   		WHEN 'J' THEN 10	-- Jack
 		  WHEN 'Q' THEN 10	-- Queen
 	  	WHEN 'K' THEN 10	-- King
@@ -52,7 +52,7 @@ CREATE OR REPLACE PACKAGE BODY deck_package IS
 		  	ELSE	
 	  			value := 1;
   			END IF;
-		  -- If face_value is not a letter, 
+		-- If face_value is not a letter, 
 	  	-- convert from VARCHAR to NUMBER
   		ELSE
 		  	TO_NUMBER(face_value)
