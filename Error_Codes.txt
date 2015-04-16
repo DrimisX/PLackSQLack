@@ -1,0 +1,4 @@
+V_CODE_EXISTS NUMBER := -20001;
+V_MESSAGE_EXISTS VARCHAR(40) := 'That user already exists';
+V_CODE_NOT_EXISTS NUMBER := -20002;
+V_MESSAGE_NOT_EXISTS VARCHAR(40) := 'That user does not exists';
