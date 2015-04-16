@@ -251,21 +251,35 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   		CASE i
   		WHEN 1 THEN 
 				v_loop_value := v_p1_hand_value;
+				UPDATE ScoreTracker
+					SET playerScore = v_loop_value
+					WHERE playerNum = i;
  			WHEN 2 AND p_player_num < hands_to_deal THEN 
  				v_loop_value := v_p2_hand_value;
+ 				UPDATE ScoreTracker
+					SET playerScore = v_loop_value
+					WHERE playerNum = i;
   		WHEN 3 AND p_player_num < hands_to_deal THEN 
   			v_loop_value := v_p3_hand_value;
+  			UPDATE ScoreTracker
+					SET playerScore = v_loop_value
+					WHERE playerNum = i;
   		WHEN 4 AND p_player_num < hands_to_deal THEN 
   			v_loop_value := v_p4_hand_value;
+  			UPDATE ScoreTracker
+					SET playerScore = v_loop_value
+					WHERE playerNum = i;
   		ELSE 
   			v_loop_value := v_dealer_hand_value;
+  			UPDATE ScoreTracker
+					SET playerScore = v_loop_value
+					WHERE playerNum = 5;
   		END
   		
   		v_round_result := v_round_result || v_cur_player || 
   			" has " || v_loop_value || "."
+  		
   	END LOOP;
-  	
-  	
   	
   END deal_game
   
