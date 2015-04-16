@@ -279,6 +279,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   		v_round_result := v_round_result || v_cur_player || 
   			" has " || v_loop_value || "."
   		
+  		
   	END LOOP;
   	
   END deal_game
