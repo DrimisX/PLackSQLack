@@ -1,3 +1,6 @@
+/* Created By Ashika Shallow */
+/* Still needs Error Logging */
+
 -- PACKAGE SPECIFICATION
 
 CREATE OR REPLACE PACKAGE player_package IS
