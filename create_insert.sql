@@ -45,7 +45,7 @@ CREATE TABLE ShuffledDeck (
 
 CREATE TABLE GameErrorLog (
 	errorDateTime DATE DEFAULT SYSDATE PRIMARY KEY,
-	errorCode VARCHAR2(25) NOT NULL,
+	errorCode NUMBER NOT NULL,
 	errorMessage VARCHAR2(250) NOT NULL,
 	relatedFunctionality VARCHAR2(250) NOT NULL,
 	gameID RAW(16) NOT NULL,
