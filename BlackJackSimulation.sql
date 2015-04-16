@@ -2,7 +2,7 @@
 
 DECLARE
 	
-	-- Constant Declaration for Simulation
+	-- CONSTANTS
 	PLAYER_COUNT INT := 3;
 	VERBOSE_MESSAGE BOOLEAN := true;
 	P1_ACCOUNT_NAME := 'Ashika123';
@@ -20,6 +20,7 @@ BEGIN
 	-- Create Shuffled Deck
 	deck_pkg.shuffle_deck();
 
+	-- Output Game Results
 	DBMS_OUTPUT.PUT_LINE(deck_pkg.deal_game);
 
 EXCEPTION
