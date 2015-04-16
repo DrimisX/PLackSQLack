@@ -1,8 +1,7 @@
 /* Created By Ashika Shallow */
 
--- PACKAGE SPECIFICATION
-
-CREATE OR REPLACE PACKAGE player_package IS
+-- Package Specification
+CREATE OR REPLACE PACKAGE player_pkg IS
 
   -- Error codes and messages
   V_CODE_EXISTS NUMBER := -20001;
@@ -32,12 +31,12 @@ CREATE OR REPLACE PACKAGE player_package IS
   -- Remove player information procedure
   PROCEDURE delete_player(p_account player.accountName%TYPE);
   
-END player_package;
+END player_pkg;
 
 
--- PACKAGE BODY
+-- Package Body
 
-CREATE OR REPLACE PACKAGE BODY player_package IS
+CREATE OR REPLACE PACKAGE BODY player_pkg IS
   -- Create player procedure
   PROCEDURE create_player(
       p_account player.accountName%TYPE, p_password player.password%TYPE,
@@ -116,4 +115,4 @@ CREATE OR REPLACE PACKAGE BODY player_package IS
       game_pkg.log_error(V_CODE_NOT_EXISTS, V_MESSAGE_NOT_EXISTS);
   END delete_player;
   
-END player_package;
+END player_pkg;
