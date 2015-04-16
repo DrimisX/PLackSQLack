@@ -53,6 +53,11 @@ CREATE TABLE GameErrorLog (
 	CONSTRAINT fk_gameID2 FOREIGN KEY (gameID)
 		REFERENCES Game(gameID) ON DELETE CASCADE
 	);
+	
+CREATE TABLE ScoreTracker (
+	playerNum NUMBER NOT NULL PRIMARY KEY,
+	playerScore NUMBER;
+	);
 
 INSERT ALL
 INTO Deck (cardFace, cardSuit) VALUES('2', 'Hearts')
@@ -115,6 +120,14 @@ INTO Player VALUES('Ashika123','sherocks','Ashika','Shallow','ashika@email.com')
 INTO Player VALUES('Jasmyn234','shekicks','Jasmyn','Newton','jasmyn@email.com')
 INTO Player VALUES('Dylan365','hethrows','Dylan','Huculak','dylan@email.com')
 INTO Player VALUES('Dealer4','hetakes','Shannon','Smith','dealer@email.com')
+SELECT * FROM dual;
+
+INSERT ALL
+INTO ScoreTracker VALUES(1);
+INTO ScoreTracker VALUES(2);
+INTO ScoreTracker VALUES(3);
+INTO ScoreTracker VALUES(4);
+INTO ScoreTracker VALUES(5);
 SELECT * FROM dual;
 
 CREATE SEQUENCE seq_id START WITH 1 INCREMENT BY 1 MAXVALUE 52 CYCLE;
