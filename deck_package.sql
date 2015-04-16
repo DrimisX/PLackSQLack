@@ -1,3 +1,5 @@
+/* Created By Dylan Huculak */
+
 CREATE OR REPLACE PACKAGE deck_package IS  
   -- PROCEDURES
   PROCEDURE shuffle_deck;
@@ -5,7 +7,7 @@ CREATE OR REPLACE PACKAGE deck_package IS
   -- FUNCTIONS
   FUNCTION get_card_value;
   -- Include other functions/procedures --
-END deck_of_cards;
+END deck_package;
 
 -- DECK PACKAGE
 CREATE OR REPLACE PACKAGE BODY deck_package IS
