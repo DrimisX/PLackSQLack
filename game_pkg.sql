@@ -1,3 +1,4 @@
+/* Created By Jasmyn Newton */
 CREATE OR REPLACE PACKAGE game_pkg AS
     v_game_date := Game.gameDate%TYPE;
     [constant_declaration ...]
