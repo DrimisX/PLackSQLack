@@ -24,4 +24,11 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE(deck_pkg.deal_game);
 
 EXCEPTION
+
+	-- Miscellaneous exception handler
+	WHEN OTHERS THEN
+		err_text := "ERROR IN ANONYMOUS BLOCK - " || SQLERRM;
+			DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
+		game_pkg.log_error(SQLCODE, errText);
+
 END;
