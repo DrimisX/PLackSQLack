@@ -12,6 +12,16 @@ v_p2_account_name Game.accountName%TYPE;
 v_p3_account_name Game.accountName%TYPE;
 v_p4_account_name Game.accountName%TYPE;
 
+-- PROCEDURES --
+  PROCEDURE init_proc (p_player_count INT DEFAULT 1, p_verbose_messaging BOOLEAN DEFAULT false);
+  PROCEDURE log_error (p_err_code GameErrorLog.errorCode%TYPE, p_err_msg GameErrorLog.errorMessage%TYPE);
+  PROCEDURE add_players (
+  	p_p1_account_name Game.accountName%TYPE,
+  	p_p2_account_name Game.accountName%TYPE DEFAULT NULL,
+  	p_p3_account_name Game.accountName%TYPE DEFAULT NULL,
+  	p_p4_account_name Game.accountName%TYPE DEFAULT NULL
+  	);
+
 END game_pkg;
 
 CREATE OR REPLACE PACKAGE BODY game_pkg AS
