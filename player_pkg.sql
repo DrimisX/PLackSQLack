@@ -13,13 +13,18 @@ CREATE OR REPLACE PACKAGE player_package IS
 	
   -- Get player information function
   FUNCTION get_player(p_account player.accountName%TYPE) RETURN player_type;
+  
+  -- Update player information procedure
+  PROCEDURE update_player(p_account player.accountName%TYPE, p_player player_type);
     
   -- Change password procedure
   PROCEDURE change_password(p_account player.accountName%TYPE, p_password player.password%TYPE);
   
   -- Remove player information procedure
   PROCEDURE delete_player(p_account player.accountName%TYPE);
+  
 END player_package;
+
 
 -- PACKAGE BODY
 
@@ -50,6 +55,20 @@ CREATE OR REPLACE PACKAGE BODY player_package IS
       RAISE_APPLICATION_ERROR(-20002, 'That user does not exists');    
   END get_player;
   
+  -- update_player procedure
+  PROCEDURE update_player(p_account player.accountName%TYPE, p_player player_type) 
+  IS
+    v_id player.accountName%TYPE;
+  BEGIN
+    SELECT accountName INTO v_id FROM
+      Player WHERE accountName = p_account;
+	UPDATE Player SET firstName = p_player.f_name, lastName = p_player.l_name,
+	  email = p_player.pl_email WHERE accountName = p_account;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      RAISE_APPLICATION_ERROR(-20002, 'That user does not exists');
+  END update_player;
+  
   -- Change password procedure
   PROCEDURE change_password(p_account player.accountName%TYPE, 
                             p_password player.password%TYPE) 
@@ -76,4 +95,5 @@ CREATE OR REPLACE PACKAGE BODY player_package IS
     WHEN NO_DATA_FOUND THEN
       RAISE_APPLICATION_ERROR(-20002, 'That user does not exists');
   END delete_player;
+  
 END player_package;
