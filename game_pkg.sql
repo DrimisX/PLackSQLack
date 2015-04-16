@@ -5,7 +5,8 @@ CREATE OR REPLACE PACKAGE game_pkg AS
   
   v_player_count INT;
   v_verbose_messaging BOOLEAN;
-
+  
+  v_p1_account_name Game.accountName%TYPE;
   v_p2_account_name Game.accountName%TYPE;
   v_p3_account_name Game.accountName%TYPE;
   v_p4_account_name Game.accountName%TYPE;
