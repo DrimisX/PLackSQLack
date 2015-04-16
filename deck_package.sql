@@ -4,7 +4,7 @@ CREATE OR REPLACE PACKAGE deck_pkg IS
   
   -- VARIABLES --
   v_hands_to_deal;				-- Total number of players including dealer
-  v_current_player INT;		-- Current player being dealt to
+  v_current_player NUMBER;		-- Current player being dealt to
 	v_next_player BOOLEAN;	-- Is there is another player this round
 
 	v_p1_account_name VARCHAR2;
@@ -15,18 +15,22 @@ CREATE OR REPLACE PACKAGE deck_pkg IS
 	v_p4_hand VARCHAR2;
 	v_dealer_hand VARCHAR2;	-- A string representing the dealer's cards
 
-	v_p1_hand_val INT;
-	v_p2_hand_val INT;
-	v_p3_hand_val INT;
-	v_p4_hand_val INT;
-	v_dealer_hand_val INT;	-- Dealer's hand total value
+	v_p1_hand_val NUMBER;
+	v_p2_hand_val NUMBER;
+	v_p3_hand_val NUMBER;
+	v_p4_hand_val NUMBER;
+	v_dealer_hand_val NUMBER;	-- Dealer's hand total value
 	
-	v_deck_pos INT;
+	v_deck_pos NUMBER;
 	v_card_face VARCHAR2;
 	v_card_suit VARCHAR2;
 	
 	v_deal_result VARCHAR2;
 	v_round_result VARCHAR2;
+	
+	v_winning_score NUMBER;
+	v_winning_player NUMBER;
+	v_winning_name VARCHAR2;
 	
 	err_text VARCHAR2;	-- Text for error log output
 	
@@ -66,11 +70,11 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   
   -- PROCEDURE shuffle_deck clears the existing ShuffledDeck table
   --  reads all rows from the Deck table (ordering by random), 
-  --  and inserts them into the empty ShuffledDeck.
+  --  and inserts them NUMBERo the empty ShuffledDeck.
   PROCEDURE shuffle_deck IS   
   BEGIN
     DELETE FROM ShuffledDeck;                     -- Clears the ShuffledDeck table
-    INSERT INTO ShuffledDeck (cardFace, cardSuit) -- Inserts into ShuffledDecktable
+    INSERT NUMBERO ShuffledDeck (cardFace, cardSuit) -- Inserts NUMBERo ShuffledDecktable
      SELECT cardFace, cardSuit FROM Deck            -- All rows of both columns
            ORDER BY dbms_random.value;              -- Randomizes order of SELECT rows
     v_deck_pos := 1;																-- Sets top card of deck as next
@@ -128,7 +132,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   -- The dealer's up card is recorded and shown to the players.
   PROCEDURE deal_cards IS
   	v_loop_hand VARCHAR2;
-  	v_loop_value INT;
+  	v_loop_value NUMBER;
   	v_card_face VARCHAR2;
 		v_card_suit VARCHAR2
 		v_card_val VARCHAR2;
@@ -156,7 +160,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	( p_player_num 	IS	NUMBER )
   
   	v_loop_hand VARCHAR2;
-  	v_loop_value INT;
+  	v_loop_value NUMBER;
   	v_card_face VARCHAR2;
 		v_card_suit VARCHAR2
 		v_card_val VARCHAR2;
@@ -176,7 +180,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	END
   		
   	SELECT cardFace, cardSuit 
-  	INTO v_card_face, v_card_suit
+  	NUMBERO v_card_face, v_card_suit
   	FROM ShufffledDeck
     	WHERE position = p_deck_pos;
   	v_card_val := get_card_value(v_card_face, v_loop_value);
@@ -277,12 +281,25 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   		END
   		
   		v_round_result := v_round_result || v_cur_player || 
-  			" has " || v_loop_value || "."
-  		
+  			" has " || v_loop_value || "." || chr(10);
   		
   	END LOOP;
   	
-  END deal_game
+  	SELECT MAX(playerScore)
+  		INTO v_winning_score
+  		FROM ScoreTracker;
+  	
+  	SELECT playerNum
+  		INTO v_winning_player
+  		FROM ScoreTracker
+  		WHERE playerScore = v_winning_score;
+  			
+  	v_round_result := v_round_result || get_player_name(v_winning_player) ||
+  		" wins, with " || v_winning_score || "!";
+  	
+  	return v_round_result;
+  	
+  END deal_game;
   
   FUNCTION player_decision
   	( p_player_num	IN	NUMBER )
@@ -304,5 +321,19 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	
   	return v_loop_value < 17;
   END player_decision;
+  
+  FUNCTION get_player_name
+  	( p_player_pos	IN 	NUMBER )
+  	RETURNS VARCHAR2
+  	IS
+  	v_return_name VARCHAR2;
+  	SELECT accountName
+  		INTO v_return_name
+  		FROM PlayerGame
+  		WHERE gameID = game_pkg.v_game_id
+  		AND playerPos = p_player_pos;
+  	
+  	return v_return_name;
+  END get_player_name;
   	
 END deck_pkg;
