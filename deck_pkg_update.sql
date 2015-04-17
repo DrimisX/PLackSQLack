@@ -74,7 +74,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   -- It deals one card to each player and the dealer, then a second card to each.
   -- The dealer's up card is recorded and shown to the players.
   PROCEDURE deal_cards IS
-
+    v_count NUMBER := 1;
   BEGIN
       
   v_deal_result := '';
@@ -82,7 +82,8 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 
   FOR i IN 1..2 LOOP
     FOR j IN 1..v_hands_to_deal LOOP     
-        deal_card(j);
+        deal_card(v_count);
+        v_count := v_count + 1;
         v_round_result := v_round_result || v_deal_result;
     END LOOP; 
   END LOOP; 
@@ -98,7 +99,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
         
   -- PROCEDURE deal_card deals out one card by reading from the ShuffledDeck table,
   -- then updates the player's hand, the player's hand value, and the game's output.
-  PROCEDURE deal_card( p_player_num NUMBER ) IS
+  PROCEDURE deal_card(p_player_num IN NUMBER) IS
   
     v_loop_value NUMBER;
     v_card_face VARCHAR2(4);
@@ -107,11 +108,11 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   BEGIN
     
     CASE p_player_num
-      WHEN 1 THEN v_loop_value := v_p1_v_hand_value;
-      WHEN 2 AND p_player_num < hands_to_deal THEN v_loop_value := v_p2_v_hand_value;
-      WHEN 3 AND p_player_num < hands_to_deal THEN v_loop_value := v_p3_v_hand_value;
-      WHEN 4 AND p_player_num < hands_to_deal THEN v_loop_value := v_p4_v_hand_value;
-      ELSE v_loop_value := v_dealer_v_hand_value;
+      WHEN 1 THEN v_loop_value := v_p1_hand_val;
+      WHEN 2 AND p_player_num < v_hands_to_deal THEN v_loop_value := v_p2_hand_val;
+      WHEN 3 AND p_player_num < v_hands_to_deal THEN v_loop_value := v_p3_hand_val;
+      WHEN 4 AND p_player_num < v_hands_to_deal THEN v_loop_value := v_p4_hand_val;
+      ELSE v_loop_value := v_dealer_hand_val;
     END CASE;
       
     SELECT cardFace, cardSuit 
@@ -121,27 +122,27 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
     v_card_val := get_card_value(v_card_face, v_loop_value);
     
     -- Updates player's hand string and values --
-    CASE p_loop_i
+    CASE p_player_num
       WHEN 1 THEN 
       v_p1_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
-      v_p1_v_hand_value := v_p1_v_hand_value + v_card_val;
+      v_p1_hand_val := v_p1_hand_val + v_card_val;
     WHEN 2 THEN 
-      v_p2_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
-      v_p2_v_hand_value := v_p2_v_hand_value + v_card_val;
+      v_p2_hand := v_p2_hand || v_card_face || ' of ' || v_card_suit || ',';
+      v_p2_hand_val := v_p2_hand_val + v_card_val;
       WHEN 3 THEN 
-      v_p3_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
-      v_p3_v_hand_value := v_p3_v_hand_value + v_card_val;
+      v_p3_hand := v_p3_hand || v_card_face || ' of ' || v_card_suit || ',';
+      v_p3_hand_val := v_p3_hand_val + v_card_val;
       WHEN 4 THEN 
-        v_p4_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
-      v_p4_v_hand_value := v_p4_v_hand_value + v_card_val;
+        v_p4_hand := v_p4_hand || v_card_face || ' of ' || v_card_suit || ',';
+      v_p4_hand_val := v_p4_hand_val + v_card_val;
       ELSE 
         v_dealer_hand := v_dealer_hand || v_card_face || ' of ' || v_card_suit || ',';
-      v_dealer_v_hand_value := v_dealer_v_hand_value + v_card_val;
+      v_dealer_hand_val := v_dealer_hand_val + v_card_val;
     END CASE;
       
     -- Updates game result string with the card dealt --      
-    IF p_loop_i < hands_to_deal THEN
-      v_cur_player := 'Player ' || p_loop_i;
+    IF p_player_num < hands_to_deal THEN
+      v_cur_player := 'Player ' || p_player_num;
     ELSE
      v_cur_player := 'Dealer';
     END IF;
