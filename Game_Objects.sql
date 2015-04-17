@@ -30,7 +30,7 @@ CREATE TABLE PlayerGame (
   gameID RAW(16) NOT NULL,
   accountName VARCHAR2(25) NOT NULL,
   playerPos INT NOT NULL,
-  winner VARCHAR22(2) DEFAULT 'N' NOT NULL,
+  winner VARCHAR2(2) DEFAULT 'N' NOT NULL,
   CONSTRAINT pk_playerGame PRIMARY KEY (gameID, accountName),
   CONSTRAINT fk_gameID FOREIGN KEY (gameID)
     REFERENCES Game(gameID) ON DELETE CASCADE,
