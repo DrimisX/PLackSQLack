@@ -47,10 +47,10 @@ CREATE OR REPLACE PACKAGE deck_pkg IS
   FUNCTION get_player_name(p_player_pos NUMBER) 
 	RETURN VARCHAR2;
 		    
-  FUNCTION deal_game( p_deck_pos IN	NUMBER, p_num_players NUMBER ) 
+  FUNCTION deal_game( p_deck_pos NUMBER, p_num_players NUMBER ) 
 	RETURN VARCHAR2;
   		
-  FUNCTION player_decision ( p_player_num IN	NUMBER ) 
+  FUNCTION player_decision ( p_player_num NUMBER ) 
 	RETURN BOOLEAN;
   
 END deck_pkg;
@@ -84,8 +84,8 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg AS
   --	The first is a VARCHAR2 representing the face value
   --	The second is a NUMBER representing the existing hand value
   FUNCTION get_card_value
-	  ( p_face_value IN VARCHAR2,		-- The face value of the card
-		  p_hand_value IN NUMBER )	-- The hand value before this card is added
+	  ( p_face_value VARCHAR2,		-- The face value of the card
+		  p_hand_value NUMBER )	-- The hand value before this card is added
 	  RETURN number 			-- Return type
 	  IS
 
@@ -207,7 +207,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg AS
   END deal_card;
     
   -- FUNCTION deal_game deals out the whole round
-  FUNCTION deal_game( p_deck_pos IN	NUMBER, p_num_players IN NUMBER )
+  FUNCTION deal_game( p_deck_pos NUMBER, p_num_players NUMBER )
   	RETURN VARCHAR2 IS
 
   	  v_loop_value NUMBER;
@@ -313,7 +313,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg AS
   
   -- FUNCTION player_decision accepts a player number, and makes a decision
   -- whether to hit or stand, based on the score of that player
-  FUNCTION player_decision (p_player_num IN	NUMBER )
+  FUNCTION player_decision (p_player_num NUMBER )
   	RETURN boolean IS
   	
   BEGIN	
@@ -344,7 +344,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg AS
   
   -- FUNCTION get_player_name accepts a player position, and returns
   -- the players account name
-  FUNCTION get_player_name ( p_player_pos IN NUMBER )
+  FUNCTION get_player_name ( p_player_pos NUMBER )
   	RETURN VARCHAR2 IS
   	
   	v_return_name VARCHAR2(25);
