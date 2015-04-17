@@ -154,7 +154,6 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	RETURN VARCHAR2 IS
 
   	  v_loop_value NUMBER;
-      v_i_val NUMBER;
 	  
   	BEGIN
   	
@@ -175,8 +174,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	
   	deal_cards();
   	
-  	FOR i IN 1..v_hands_to_deal LOOP
-  	  WHILE player_decision(i) LOOP	
+  	FOR i IN 1..v_hands_to_deal 
+	LOOP
+  	  WHILE player_decision(i) 
+	  LOOP	
   	    IF i < v_hands_to_deal THEN
   		  v_cur_player := 'Player ' || i;
   		ELSE
@@ -189,30 +190,30 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	END LOOP;
   	
   	FOR i IN 1..v_hands_to_deal 
-    v_i_val := i;
+	
 	LOOP		
   	  IF i < v_hands_to_deal THEN
-	     v_cur_player := 'Player ' || i;
-  	  ELSE v_cur_player := 'Dealer';
+	    v_cur_player := 'Player ' || i;
+  	  ELSE
+ 	 	v_cur_player := 'Dealer';
   	  END IF;
-  		
-  	  CASE
-  		WHEN v_i_val = 1 THEN 
+  	 
+		IF i=1 THEN 
 		  v_loop_value := v_p1_hand_val;
 		  UPDATE ScoreTracker
 		    SET playerScore = v_loop_value
 			WHERE playerNum = i;
- 		WHEN v_i_val = 2 AND p_player_num < v_hands_to_deal THEN 
+ 		ELSE IF i=2 AND p_player_num < v_hands_to_deal THEN 
  		  v_loop_value := v_p2_hand_val;
  		  UPDATE ScoreTracker
 		    SET playerScore = v_loop_value
 			WHERE playerNum = i;
-  		WHEN v_i_val =3 AND p_player_num < v_hands_to_deal THEN 
+  		ELSE IF i=3 AND p_player_num < v_hands_to_deal THEN 
   			v_loop_value := v_p3_hand_val;
   			UPDATE ScoreTracker
 			  SET playerScore = v_loop_value
 			  WHERE playerNum = i;
-  		WHEN v_i_val =4 AND p_player_num < v_hands_to_deal THEN 
+  		ELSE IF i=4 AND p_player_num < v_hands_to_deal THEN 
   			v_loop_value := v_p4_hand_val;
   			UPDATE ScoreTracker
 			  SET playerScore = v_loop_value
@@ -222,7 +223,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   			UPDATE ScoreTracker
 			  SET playerScore = v_loop_value
 			  WHERE playerNum = 5;
-  	  END CASE;
+		END IF;
   		
   	  v_round_result := v_round_result || v_cur_player || 
   			' has ' || v_loop_value || '.' || chr(10);
