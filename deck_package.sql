@@ -1,58 +1,3 @@
-CREATE OR REPLACE PACKAGE deck_pkg IS  
-
-  -- VARIABLES --
-  v_hands_to_deal NUMBER;				-- Total number of players including dealer
-  v_current_player NUMBER;		-- Current player being dealt to
-	v_next_player BOOLEAN;	-- Is there is another player this round
-
-	-- Strings representing each player's cards --
-	v_p1_hand VARCHAR2(256);
-	v_p2_hand VARCHAR2(256);
-	v_p3_hand VARCHAR2(256);
-	v_p4_hand VARCHAR2(256);
-	v_dealer_hand VARCHAR2(256);
-
-	-- Numbers representing each player's hand values --
-	v_p1_hand_val NUMBER;
-	v_p2_hand_val NUMBER;
-	v_p3_hand_val NUMBER;
-	v_p4_hand_val NUMBER;
-	v_dealer_hand_val NUMBER;
-	
-	v_deck_pos NUMBER;		-- Current top card of the shuffled deck
-	v_card_face VARCHAR2(4);	-- Holds a card's face value
-	v_card_suit VARCHAR2(8);	-- Holds a card's suit
-	
-	v_deal_result VARCHAR2(255);		-- Holds a string output of a card dealt
-	v_round_result VARCHAR2(255);	-- Holds a string output of the game's entirety
-	
-	v_winning_score NUMBER;		-- Holds the high score for the round
-	v_winning_player NUMBER;	-- Holds the winning player position
-	v_winning_name VARCHAR2(30);	-- Holds the winning player's name
-	
-	v_err_text VARCHAR2(255);				-- Text for error log output
-	v_err_code NUMBER;					-- Number for error log output
-	
-	-- PROCEDURES --
-  PROCEDURE shuffle_deck;
-  
-  PROCEDURE deal_cards;
-  
-  PROCEDURE deal_card;
-  
-  -- FUNCTIONS --
-  FUNCTION get_card_value
-	  ( p_face_value IN VARCHAR2, p_hand_value IN NUMBER ) RETURN NUMBER;
-		  
-  FUNCTION get_player_name(p_player_pos NUMBER) RETURN VARCHAR2;
-		    
-  FUNCTION deal_game( p_deck_pos IN	NUMBER, p_num_players IN	NUMBER ) RETURN VARCHAR2;
-  		
-  FUNCTION player_decision
-  	( p_player_num	IN	NUMBER ) RETURN BOOLEAN;
-  
-END deck_pkg;
-
 CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   
   -- PROCEDURE shuffle_deck clears the existing ShuffledDeck table
@@ -82,34 +27,33 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   --	The first is a VARCHAR2 representing the face value
   --	The second is a NUMBER representing the existing hand value
   FUNCTION get_card_value
-	  ( face_value IN VARCHAR2,		-- The face value of the card
-		  hand_value IN NUMBER )	-- The hand value before this card is added
+	  ( p_face_value IN VARCHAR2,		-- The face value of the card
+		  p_hand_value IN NUMBER )	-- The hand value before this card is added
 	  RETURN number 			-- Return type
 	  IS
 
 	  value NUMBER;				-- The numerical value to be returned
-	  hand_under_11 boolean;		-- Is the hand under 11
+	  v_hand_under_11 boolean;		-- Is the hand under 11
 	
   BEGIN
-  	  IF hand_value < 11 THEN
-  	  	hand_under_11 := true;
+  	  IF p_hand_value < 11 THEN
+  	  	v_hand_under_11 := true;
   	  ELSE
-  	  	hand_under_11 := false;
+  	  	v_hand_under_11 := false;
   	  END IF;
 	  -- Assign proper value based on face_value
 	  value := 
-	    CASE face_value		-- Face Values:
+	    CASE p_face_value		-- Face Values:
   		  WHEN 'J' THEN 10	-- Jack
 		  WHEN 'Q' THEN 10	-- Queen
 	  	  WHEN 'K' THEN 10	-- King
-  		  WHEN 'A' THEN 11		-- Ace
-
+  		  WHEN 'A' THEN 11	-- Ace
 		-- If face_value is not a letter, 
 	  	-- convert from VARCHAR2 to NUMBER
   		  ELSE
-		  	TO_NUMBER(face_value)
+		  	TO_NUMBER(p_face_value)
 	    END;
-	  IF hand_under_11 = false AND value = 11 THEN
+	  IF v_hand_under_11 = false AND value = 11 THEN
 	  	value := 1;
 	  END IF;
 	  RETURN value;
@@ -134,7 +78,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	v_deal_result := '';
     v_round_result := '';
   	FOR i IN 1..2 LOOP
-	  FOR j IN 1..hands_to_deal LOOP 			
+	  FOR j IN 1..v_hands_to_deal LOOP 			
   	    deal_card(j);
   		v_round_result := v_round_result || v_deal_result;
   	  END LOOP;	
@@ -159,47 +103,47 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	v_card_val NUMBER;
   BEGIN
   	
-  	CASE p_player_num
-  		WHEN 1 THEN 
-		  v_loop_value := v_p1_hand_value
- 		WHEN 2 AND p_player_num < hands_to_deal THEN 
- 		  v_loop_value := v_p2_hand_value
-  		WHEN 3 AND p_player_num < hands_to_deal THEN 
-  		  v_loop_value := v_p3_hand_value
-  		WHEN 4 AND p_player_num < hands_to_deal THEN 
-  		  v_loop_value := v_p4_hand_value
+  	CASE
+  		WHEN p_player_num=1 THEN 
+		  v_loop_value := v_p1_hand_val;
+ 		WHEN p_player_num=2 AND p_player_num < v_hands_to_deal THEN 
+ 		  v_loop_value := v_p2_hand_val;
+  		WHEN p_player_num=3 AND p_player_num < v_hands_to_deal THEN 
+  		  v_loop_value := v_p3_hand_val;
+  		WHEN p_player_num=4 AND p_player_num < v_hands_to_deal THEN 
+  		  v_loop_value := v_p4_hand_val;
   		ELSE 
-  		  v_loop_value := v_dealer_hand_value
-  	END;
+  		  v_loop_value := v_dealer_hand_val;
+  	END CASE;
   		
   	SELECT cardFace, cardSuit 
   	  INTO v_card_face, v_card_suit
-  	  FROM ShufffledDeck
-      WHERE position = p_deck_pos;
+  	  FROM ShuffledDeck
+      WHERE position = v_deck_pos;
   	v_card_val := get_card_value(v_card_face, v_loop_value);
   	
   	-- Updates player's hand string and values --
-  	CASE p_loop_i
+  	CASE p_player_num
   		WHEN 1 THEN 
 		  v_p1_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
-		  v_p1_hand_value := v_p1_hand_value + v_card_val;
+		  v_p1_hand_val := v_p1_hand_val + v_card_val;
  		WHEN 2 THEN 
  		  v_p2_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
-		  v_p2_hand_value := v_p2_hand_value + v_card_val;
+		  v_p2_hand_val := v_p2_hand_val + v_card_val;
   		WHEN 3 THEN 
  		  v_p3_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
-		  v_p3_hand_value := v_p3_hand_value + v_card_val;
+		  v_p3_hand_val := v_p3_hand_val + v_card_val;
   		WHEN 4 THEN 
   		  v_p4_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
-		  v_p4_hand_value := v_p4_hand_value + v_card_val;
+		  v_p4_hand_val := v_p4_hand_val + v_card_val;
   		ELSE 
   		  v_dealer_hand := v_dealer_hand || v_card_face || ' of ' || v_card_suit || ',';
-		  v_dealer_hand_value := v_dealer_hand_value + v_card_val;
-  	END;
+		  v_dealer_hand_val := v_dealer_hand_val + v_card_val;
+  	END CASE;
   		
   	-- Updates game result string with the card dealt --			
-  	IF p_loop_i < hands_to_deal THEN
-  	  v_cur_player := 'Player ' || p_loop_i;
+  	IF p_player_num < v_hands_to_deal THEN
+  	  v_cur_player := 'Player ' || p_player_num;
   	ELSE
  	   v_cur_player := 'Dealer';
   	END IF;
@@ -207,34 +151,35 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
     
   -- FUNCTION deal_game deals out the whole round
   FUNCTION deal_game( p_deck_pos IN	NUMBER, p_num_players IN NUMBER )
-  	RETURNS VARCHAR2 IS
-  	
-  	  v_dealer_hand_val NUMBER:= 0;
-	  v_p1_hand_val NUMBER:= 0;
-	  v_p2_hand_val NUMBER:= 0;
-	  v_p3_hand_val NUMBER:= 0;
-	  v_p4_hand_val NUMBER:= 0;
-	
-	  v_p1_hand := '';
-	  v_p2_hand := '';
-	  v_p3_hand := '';
-	  v_p4_hand := '';
-	
-	  v_round_result := '';
-	
-	  v_hands_to_deal := game_pkg.v_player_count + 1;
-  	
-  	  v_loop_value
+  	RETURN VARCHAR2 IS
+
+  	  v_loop_value NUMBER;
+	  
   	BEGIN
   	
+	v_dealer_hand_val := 0;
+	v_p1_hand_val := 0;
+	v_p2_hand_val := 0;
+	v_p3_hand_val := 0;
+	v_p4_hand_val := 0;
+	
+	v_p1_hand := '';
+	v_p2_hand := '';
+	v_p3_hand := '';
+	v_p4_hand := '';
+	
+	v_round_result := '';
+	
+	v_hands_to_deal := game_pkg.v_player_count + 1;
+	
   	deal_cards();
   	
   	FOR i IN 1..v_hands_to_deal LOOP
   	  WHILE player_decision(i) LOOP	
-  	    IF i < hands_to_deal THEN
+  	    IF i < v_hands_to_deal THEN
   		  v_cur_player := 'Player ' || i;
   		ELSE
- 	 	  v_cur_player := 'Dealer'
+ 	 	  v_cur_player := 'Dealer';
   		END IF;
   		v_round_result := v_round_result || v_cur_player || ' hits.' || chr(10);
   		deal_card(i);
@@ -242,36 +187,37 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	  v_round_result := v_round_result || V_cur_player || ' stands.' || chr(10);
   	END LOOP;
   	
-  	FOR i IN 1..v_hands_to_deal LOOP		
-  	  IF i < hands_to_deal THEN
+  	FOR i IN 1..v_hands_to_deal 
+	LOOP		
+  	  IF i < v_hands_to_deal THEN
 	    v_cur_player := 'Player ' || i;
   	  ELSE
  	 	v_cur_player := 'Dealer';
   	  END IF;
   		
-  	  CASE i
-  		WHEN 1 THEN 
-		  v_loop_value := v_p1_hand_value;
+  	  CASE
+  		WHEN i=1 THEN 
+		  v_loop_value := v_p1_hand_val;
 		  UPDATE ScoreTracker
 		    SET playerScore = v_loop_value
 			WHERE playerNum = i;
- 		WHEN 2 AND p_player_num < hands_to_deal THEN 
- 		  v_loop_value := v_p2_hand_value;
+ 		WHEN i=2 AND p_player_num < v_hands_to_deal THEN 
+ 		  v_loop_value := v_p2_hand_val;
  		  UPDATE ScoreTracker
 		    SET playerScore = v_loop_value
 			WHERE playerNum = i;
-  		WHEN 3 AND p_player_num < hands_to_deal THEN 
-  			v_loop_value := v_p3_hand_value;
+  		WHEN i=3 AND p_player_num < v_hands_to_deal THEN 
+  			v_loop_value := v_p3_hand_val;
   			UPDATE ScoreTracker
 			  SET playerScore = v_loop_value
 			  WHERE playerNum = i;
-  		WHEN 4 AND p_player_num < hands_to_deal THEN 
-  			v_loop_value := v_p4_hand_value;
+  		WHEN i=4 AND p_player_num < v_hands_to_deal THEN 
+  			v_loop_value := v_p4_hand_val;
   			UPDATE ScoreTracker
 			  SET playerScore = v_loop_value
 			  WHERE playerNum = i;
   		ELSE 
-  			v_loop_value := v_dealer_hand_value;
+  			v_loop_value := v_dealer_hand_val;
   			UPDATE ScoreTracker
 			  SET playerScore = v_loop_value
 			  WHERE playerNum = 5;
@@ -314,15 +260,15 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   BEGIN	
   	CASE p_player_num
   		WHEN 1 THEN 
-		  v_loop_value := v_p1_hand_value;
- 		WHEN 2 AND p_player_num < hands_to_deal THEN 
- 		  v_loop_value := v_p2_hand_value;
-  		WHEN 3 AND p_player_num < hands_to_deal THEN 
-  			v_loop_value := v_p3_hand_value;
-  		WHEN 4 AND p_player_num < hands_to_deal THEN 
-  			v_loop_value := v_p4_hand_value;
+		  v_loop_value := v_p1_hand_val;
+ 		WHEN 2 AND p_player_num < v_hands_to_deal THEN 
+ 		  v_loop_value := v_p2_hand_val;
+  		WHEN 3 AND p_player_num < v_hands_to_deal THEN 
+  			v_loop_value := v_p3_hand_val;
+  		WHEN 4 AND p_player_num < v_hands_to_deal THEN 
+  			v_loop_value := v_p4_hand_val;
   		ELSE 
-  			v_loop_value := v_dealer_hand_value;
+  			v_loop_value := v_dealer_hand_val;
   	END CASE;
   	
   	RETURN v_loop_value < 17;
@@ -345,7 +291,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	v_return_name VARCHAR2(25);
   BEGIN
   	IF p_player_pos = 5 THEN
-  	  v_return_name = 'Dealer';
+  	  v_return_name := 'Dealer';
   	ELSE
   	  SELECT accountName INTO v_return_name
   		FROM PlayerGame
@@ -364,4 +310,3 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   END get_player_name;
   	
 END deck_pkg;
-  	
