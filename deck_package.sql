@@ -6,11 +6,11 @@ CREATE OR REPLACE PACKAGE deck_pkg IS
 	v_next_player BOOLEAN;	-- Is there is another player this round
 
 	-- Strings representing each player's cards --
-	v_p1_hand VARCHAR2;
-	v_p2_hand VARCHAR2;
-	v_p3_hand VARCHAR2;
-	v_p4_hand VARCHAR2;
-	v_dealer_hand VARCHAR2;
+	v_p1_hand VARCHAR2(256);
+	v_p2_hand VARCHAR2(256);
+	v_p3_hand VARCHAR2(256);
+	v_p4_hand VARCHAR2(256);
+	v_dealer_hand VARCHAR2(256);
 
 	-- Numbers representing each player's hand values --
 	v_p1_hand_val NUMBER;
@@ -20,17 +20,18 @@ CREATE OR REPLACE PACKAGE deck_pkg IS
 	v_dealer_hand_val NUMBER;
 	
 	v_deck_pos NUMBER;		-- Current top card of the shuffled deck
-	v_card_face VARCHAR2;	-- Holds a card's face value
-	v_card_suit VARCHAR2;	-- Holds a card's suit
+	v_card_face VARCHAR2(4);	-- Holds a card's face value
+	v_card_suit VARCHAR2(8);	-- Holds a card's suit
 	
-	v_deal_result VARCHAR2;		-- Holds a string output of a card dealt
-	v_round_result VARCHAR2;	-- Holds a string output of the game's entirety
+	v_deal_result VARCHAR2(256);		-- Holds a string output of a card dealt
+	v_round_result VARCHAR2(MAX);	-- Holds a string output of the game's entirety
 	
 	v_winning_score NUMBER;		-- Holds the high score for the round
 	v_winning_player NUMBER;	-- Holds the winning player position
 	v_winning_name VARCHAR2;	-- Holds the winning player's name
 	
 	err_text VARCHAR2;				-- Text for error log output
+	err_code NUMBER;					-- Number for error log output
 	
 	-- PROCEDURES --
   PROCEDURE shuffle_deck;
@@ -79,9 +80,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ': ERROR IN FUNCTION shuffle_deck - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
-	  	game_pkg.log_error(SQLCODE, err_text);
+	  	err_code := SQLCODE;
+		  err_text := ': ERROR IN FUNCTION shuffle_deck - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(err_code||' '||err_text);
+	  	game_pkg.log_error(err_code, err_text);
   END shuffle_deck;
   
   -- FUNCTION get_card_value returns the numerical value of a card,
@@ -125,9 +127,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ': ERROR IN FUNCTION get_card_value - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
-	  	game_pkg.log_error(SQLCODE, err_text);
+	  	err_code := SQLCODE;
+		  err_text := ': ERROR IN FUNCTION get_card_value - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
+	  	game_pkg.log_error(err_code, err_text);
   END;
 
   	
@@ -157,9 +160,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ': ERROR IN FUNCTION deal_cards - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
-	  	game_pkg.log_error(SQLCODE, err_text);
+	  	err_code := SQLCODE;
+		  err_text := ': ERROR IN FUNCTION deal_cards - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
+	  	game_pkg.log_error(err_code, err_text);
   END deal_cards;
   	
   	
@@ -195,6 +199,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
     	WHERE position = p_deck_pos;
   	v_card_val := get_card_value(v_card_face, v_loop_value);
   	
+  	-- Updates player's hand string and values --
   	CASE p_loop_i
   		WHEN 1 THEN 
 			  v_p1_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
@@ -213,21 +218,22 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 				v_dealer_hand_value := v_dealer_hand_value + v_card_val;
   	END
   		
-  				
+  	-- Updates game result string with the card dealt --			
   	IF p_loop_i < hands_to_deal
   		v_cur_player := 'Player ' || p_loop_i
   	ELSE
  	 		v_cur_player := 'Dealer'
   	END IF;
-  	v_deal_result := v_deal_result || v_cur_player || ' receives a ' ||
+  	v_round_result := v_round_result || v_cur_player || ' receives a ' ||
   		v_card_face || ' of ' || v_card_suit || '.' || chr(10);
   		
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ': ERROR IN PROCEDURE deal_card - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
-	  	game_pkg.log_error(SQLCODE, err_text);
+	  	err_code := SQLCODE;
+		  err_text := ': ERROR IN PROCEDURE deal_card - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
+	  	game_pkg.log_error(err_code, err_text);
 				
   END deal_card;
   
@@ -319,9 +325,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ': ERROR IN FUNCTION deal_game - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
-	  	game_pkg.log_error(SQLCODE, err_text);
+	  	err_code := SQLCODE;
+		  err_text := ': ERROR IN FUNCTION deal_game - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
+	  	game_pkg.log_error(err_code, err_text);
   	
   END deal_game;
   
@@ -350,9 +357,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ': ERROR IN FUNCTION player_decision - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
-	  	game_pkg.log_error(SQLCODE, err_text);
+	  	err_code := SQLCODE;
+		  err_text := ': ERROR IN FUNCTION player_decision - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
+	  	game_pkg.log_error(err_code, err_text);
 	  	
   END player_decision;
   
@@ -378,9 +386,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ': ERROR IN FUNCTION get_player_name - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
-	  	game_pkg.log_error(SQLCODE, err_text);
+		  err_code := SQLCODE;
+		  err_text := ': ERROR IN FUNCTION get_player_name - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
+	  	game_pkg.log_error(err_code, err_text);
   END get_player_name;
   	
 END deck_pkg;
