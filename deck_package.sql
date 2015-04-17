@@ -150,15 +150,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   -- It deals one card to each player and the dealer, then a second card to each.
   -- The dealer's up card is recorded and shown to the players.
   PROCEDURE deal_cards IS
-  	v_loop_hand VARCHAR2;
-  	v_loop_value NUMBER;
-  	v_card_face VARCHAR2;
-		v_card_suit VARCHAR2
-		v_card_val VARCHAR2;
+
   BEGIN
   		
   	v_deal_result := '';
-  	v_play_result := '';
 		v_round_result := '';
   	FOR i IN 1..2
   	LOOP
@@ -185,11 +180,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   PROCEDURE deal_card 
   	( p_player_num 	IS	NUMBER )
   
-  	v_loop_hand VARCHAR2;
   	v_loop_value NUMBER;
-  	v_card_face VARCHAR2;
-		v_card_suit VARCHAR2
-		v_card_val VARCHAR2;
+  	v_card_face VARCHAR2(4);
+		v_card_suit VARCHAR2(8)
+		v_card_val NUMBER;
   BEGIN
   	
   	CASE p_player_num
