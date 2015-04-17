@@ -1,38 +1,36 @@
 CREATE OR REPLACE PACKAGE deck_pkg IS  
-  
-  -- CONSTANTS --
-  
+
   -- VARIABLES --
   v_hands_to_deal;				-- Total number of players including dealer
   v_current_player NUMBER;		-- Current player being dealt to
 	v_next_player BOOLEAN;	-- Is there is another player this round
 
-	v_p1_account_name VARCHAR2;
-
+	-- Strings representing each player's cards --
 	v_p1_hand VARCHAR2;
 	v_p2_hand VARCHAR2;
 	v_p3_hand VARCHAR2;
 	v_p4_hand VARCHAR2;
-	v_dealer_hand VARCHAR2;	-- A string representing the dealer's cards
+	v_dealer_hand VARCHAR2;
 
+	-- Numbers representing each player's hand values --
 	v_p1_hand_val NUMBER;
 	v_p2_hand_val NUMBER;
 	v_p3_hand_val NUMBER;
 	v_p4_hand_val NUMBER;
-	v_dealer_hand_val NUMBER;	-- Dealer's hand total value
+	v_dealer_hand_val NUMBER;
 	
-	v_deck_pos NUMBER;
-	v_card_face VARCHAR2;
-	v_card_suit VARCHAR2;
+	v_deck_pos NUMBER;		-- Current top card of the shuffled deck
+	v_card_face VARCHAR2;	-- Holds a card's face value
+	v_card_suit VARCHAR2;	-- Holds a card's suit
 	
-	v_deal_result VARCHAR2;
-	v_round_result VARCHAR2;
+	v_deal_result VARCHAR2;		-- Holds a string output of a card dealt
+	v_round_result VARCHAR2;	-- Holds a string output of the game's entirety
 	
-	v_winning_score NUMBER;
-	v_winning_player NUMBER;
-	v_winning_name VARCHAR2;
+	v_winning_score NUMBER;		-- Holds the high score for the round
+	v_winning_player NUMBER;	-- Holds the winning player position
+	v_winning_name VARCHAR2;	-- Holds the winning player's name
 	
-	err_text VARCHAR2;	-- Text for error log output
+	err_text VARCHAR2;				-- Text for error log output
 	
 	-- PROCEDURES --
   PROCEDURE shuffle_deck;
@@ -365,11 +363,16 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	RETURNS VARCHAR2
   	IS
   	v_return_name VARCHAR2;
-  	SELECT accountName
-  		INTO v_return_name
-  		FROM PlayerGame
-  		WHERE gameID = game_pkg.v_game_id
-  		AND playerPos = p_player_pos;
+  	
+  	IF p_player_pos = 5
+  		v_return_name = "Dealer"
+  	ELSE
+  		SELECT accountName
+  			INTO v_return_name
+  			FROM PlayerGame
+  			WHERE gameID = game_pkg.v_game_id
+  			AND playerPos = p_player_pos;
+  	END IF;
   	
   	return v_return_name;
   	EXCEPTION
