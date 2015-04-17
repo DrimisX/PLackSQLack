@@ -80,8 +80,8 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
 		  err_text = ': ERROR IN FUNCTION shuffle_deck - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
-	  	game_pkg.log_error(SQLCODE, errText);
+		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
+	  	game_pkg.log_error(SQLCODE, err_text);
   END shuffle_deck;
   
   -- FUNCTION get_card_value returns the numerical value of a card,
@@ -126,8 +126,8 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
 		  err_text = ': ERROR IN FUNCTION get_card_value - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
-	  	game_pkg.log_error(SQLCODE, errText);
+		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
+	  	game_pkg.log_error(SQLCODE, err_text);
   END;
 
   	
@@ -158,8 +158,8 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
 		  err_text = ': ERROR IN FUNCTION deal_cards - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
-	  	game_pkg.log_error(SQLCODE, errText);
+		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
+	  	game_pkg.log_error(SQLCODE, err_text);
   END deal_cards;
   	
   	
@@ -226,8 +226,8 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
 		  err_text = ': ERROR IN PROCEDURE deal_card - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
-	  	game_pkg.log_error(SQLCODE, errText);
+		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
+	  	game_pkg.log_error(SQLCODE, err_text);
 				
   END deal_card;
   
@@ -320,8 +320,8 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
 		  err_text = ': ERROR IN FUNCTION deal_game - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
-	  	game_pkg.log_error(SQLCODE, errText);
+		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
+	  	game_pkg.log_error(SQLCODE, err_text);
   	
   END deal_game;
   
@@ -351,8 +351,8 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
 		  err_text = ': ERROR IN FUNCTION player_decision - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
-	  	game_pkg.log_error(SQLCODE, errText);
+		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
+	  	game_pkg.log_error(SQLCODE, err_text);
 	  	
   END player_decision;
   
@@ -379,8 +379,8 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
 		  err_text = ': ERROR IN FUNCTION get_player_name - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
-	  	game_pkg.log_error(SQLCODE, errText);
+		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| err_text);
+	  	game_pkg.log_error(SQLCODE, err_text);
   END get_player_name;
   	
 END deck_pkg;
