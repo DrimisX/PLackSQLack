@@ -1,7 +1,7 @@
 CREATE OR REPLACE PACKAGE deck_pkg IS  
 
   -- VARIABLES --
-  v_hands_to_deal;				-- Total number of players including dealer
+  v_hands_to_deal NUMBER;				-- Total number of players including dealer
   v_current_player NUMBER;		-- Current player being dealt to
 	v_next_player BOOLEAN;	-- Is there is another player this round
 
@@ -23,21 +23,33 @@ CREATE OR REPLACE PACKAGE deck_pkg IS
 	v_card_face VARCHAR2(4);	-- Holds a card's face value
 	v_card_suit VARCHAR2(8);	-- Holds a card's suit
 	
-	v_deal_result VARCHAR2(256);		-- Holds a string output of a card dealt
-	v_round_result VARCHAR2(MAX);	-- Holds a string output of the game's entirety
+	v_deal_result VARCHAR2(255);		-- Holds a string output of a card dealt
+	v_round_result VARCHAR2(255);	-- Holds a string output of the game's entirety
 	
 	v_winning_score NUMBER;		-- Holds the high score for the round
 	v_winning_player NUMBER;	-- Holds the winning player position
-	v_winning_name VARCHAR2;	-- Holds the winning player's name
+	v_winning_name VARCHAR2(30);	-- Holds the winning player's name
 	
-	v_err_text VARCHAR2;				-- Text for error log output
+	v_err_text VARCHAR2(255);				-- Text for error log output
 	v_err_code NUMBER;					-- Number for error log output
 	
 	-- PROCEDURES --
   PROCEDURE shuffle_deck;
   
+  PROCEDURE deal_cards;
+  
+  PROCEDURE deal_card;
+  
   -- FUNCTIONS --
-  FUNCTION get_card_value;
+  FUNCTION get_card_value
+	  ( p_face_value IN VARCHAR2, p_hand_value IN NUMBER ) RETURN NUMBER;
+		  
+  FUNCTION get_player_name(p_player_pos NUMBER) RETURN VARCHAR2;
+		    
+  FUNCTION deal_game( p_deck_pos IN	NUMBER, p_num_players IN	NUMBER ) RETURN VARCHAR2;
+  		
+  FUNCTION player_decision
+  	( p_player_num	IN	NUMBER ) RETURN BOOLEAN;
   
 END deck_pkg;
 
