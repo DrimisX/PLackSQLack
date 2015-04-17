@@ -1,8 +1,8 @@
 /* DROP statements to guard against duplicate tables */
 
+DROP TABLE PlayerGame;
 DROP TABLE Game;
 DROP TABLE Player;
-DROP TABLE PlayerGame;
 DROP TABLE Deck;
 DROP TABLE ShuffledDeck;
 DROP TABLE GameErrorLog;
