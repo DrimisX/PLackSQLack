@@ -30,8 +30,8 @@ CREATE OR REPLACE PACKAGE deck_pkg IS
 	v_winning_player NUMBER;	-- Holds the winning player position
 	v_winning_name VARCHAR2;	-- Holds the winning player's name
 	
-	err_text VARCHAR2;				-- Text for error log output
-	err_code NUMBER;					-- Number for error log output
+	v_err_text VARCHAR2;				-- Text for error log output
+	v_err_code NUMBER;					-- Number for error log output
 	
 	-- PROCEDURES --
   PROCEDURE shuffle_deck;
@@ -80,10 +80,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-	  	err_code := SQLCODE;
-		  err_text := ': ERROR IN FUNCTION shuffle_deck - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(err_code||' '||err_text);
-	  	game_pkg.log_error(err_code, err_text);
+	  	v_err_code := SQLCODE;
+		  v_err_text := ': ERROR IN FUNCTION shuffle_deck - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(v_err_code||' '||v_err_text);
+	  	game_pkg.log_error(v_err_code, v_err_text);
   END shuffle_deck;
   
   -- FUNCTION get_card_value returns the numerical value of a card,
@@ -127,10 +127,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-	  	err_code := SQLCODE;
-		  err_text := ': ERROR IN FUNCTION get_card_value - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
-	  	game_pkg.log_error(err_code, err_text);
+	  	v_err_code := SQLCODE;
+		  v_err_text := ': ERROR IN FUNCTION get_card_value - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(v_err_code||' '|| v_err_text);
+	  	game_pkg.log_error(v_err_code, v_err_text);
   END;
 
   	
@@ -160,10 +160,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-	  	err_code := SQLCODE;
-		  err_text := ': ERROR IN FUNCTION deal_cards - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
-	  	game_pkg.log_error(err_code, err_text);
+	  	v_err_code := SQLCODE;
+		  v_err_text := ': ERROR IN FUNCTION deal_cards - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(v_err_code||' '|| v_err_text);
+	  	game_pkg.log_error(v_err_code, v_err_text);
   END deal_cards;
   	
   	
@@ -230,10 +230,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-	  	err_code := SQLCODE;
-		  err_text := ': ERROR IN PROCEDURE deal_card - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
-	  	game_pkg.log_error(err_code, err_text);
+	  	v_err_code := SQLCODE;
+		  v_err_text := ': ERROR IN PROCEDURE deal_card - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(v_err_code||' '|| v_err_text);
+	  	game_pkg.log_error(v_err_code, v_err_text);
 				
   END deal_card;
   
@@ -325,10 +325,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-	  	err_code := SQLCODE;
-		  err_text := ': ERROR IN FUNCTION deal_game - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
-	  	game_pkg.log_error(err_code, err_text);
+	  	v_err_code := SQLCODE;
+		  v_err_text := ': ERROR IN FUNCTION deal_game - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(v_err_code||' '|| v_err_text);
+	  	game_pkg.log_error(v_err_code, v_err_text);
   	
   END deal_game;
   
@@ -357,10 +357,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-	  	err_code := SQLCODE;
-		  err_text := ': ERROR IN FUNCTION player_decision - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
-	  	game_pkg.log_error(err_code, err_text);
+	  	v_err_code := SQLCODE;
+		  v_err_text := ': ERROR IN FUNCTION player_decision - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(v_err_code||' '|| v_err_text);
+	  	game_pkg.log_error(v_err_code, v_err_text);
 	  	
   END player_decision;
   
@@ -386,10 +386,10 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_code := SQLCODE;
-		  err_text := ': ERROR IN FUNCTION get_player_name - ' || SQLERRM;
-		  DBMS_OUTPUT.PUT_LINE(err_code||' '|| err_text);
-	  	game_pkg.log_error(err_code, err_text);
+		  v_err_code := SQLCODE;
+		  v_err_text := ': ERROR IN FUNCTION get_player_name - ' || SQLERRM;
+		  DBMS_OUTPUT.PUT_LINE(v_err_code||' '|| v_err_text);
+	  	game_pkg.log_error(v_err_code, v_err_text);
   END get_player_name;
   	
 END deck_pkg;
