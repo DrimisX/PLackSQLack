@@ -79,7 +79,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ": ERROR IN FUNCTION shuffle_deck - " || SQLERRM;
+		  err_text = ': ERROR IN FUNCTION shuffle_deck - ' || SQLERRM;
 		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
 	  	game_pkg.log_error(SQLCODE, errText);
   END shuffle_deck;
@@ -125,7 +125,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ": ERROR IN FUNCTION get_card_value - " || SQLERRM;
+		  err_text = ': ERROR IN FUNCTION get_card_value - ' || SQLERRM;
 		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
 	  	game_pkg.log_error(SQLCODE, errText);
   END;
@@ -157,7 +157,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
 	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ": ERROR IN FUNCTION deal_cards - " || SQLERRM;
+		  err_text = ': ERROR IN FUNCTION deal_cards - ' || SQLERRM;
 		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
 	  	game_pkg.log_error(SQLCODE, errText);
   END deal_cards;
@@ -197,35 +197,35 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	
   	CASE p_loop_i
   		WHEN 1 THEN 
-			  v_p1_hand := v_p1_hand || v_card_face || " of " || v_card_suit || ",";
+			  v_p1_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
 				v_p1_hand_value := v_p1_hand_value + v_card_val;
  			WHEN 2 THEN 
- 				v_p2_hand := v_p1_hand || v_card_face || " of " || v_card_suit || ",";
+ 				v_p2_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
 				v_p2_hand_value := v_p2_hand_value + v_card_val;
   		WHEN 3 THEN 
- 			 	v_p3_hand := v_p1_hand || v_card_face || " of " || v_card_suit || ",";
+ 			 	v_p3_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
 				v_p3_hand_value := v_p3_hand_value + v_card_val;
   		WHEN 4 THEN 
-  			v_p4_hand := v_p1_hand || v_card_face || " of " || v_card_suit || ",";
+  			v_p4_hand := v_p1_hand || v_card_face || ' of ' || v_card_suit || ',';
 				v_p4_hand_value := v_p4_hand_value + v_card_val;
   		ELSE 
-  			v_dealer_hand := v_dealer_hand || v_card_face || " of " || v_card_suit || ",";
+  			v_dealer_hand := v_dealer_hand || v_card_face || ' of ' || v_card_suit || ',';
 				v_dealer_hand_value := v_dealer_hand_value + v_card_val;
   	END
   		
   				
   	IF p_loop_i < hands_to_deal
-  		v_cur_player := "Player " || p_loop_i
+  		v_cur_player := 'Player ' || p_loop_i
   	ELSE
- 	 		v_cur_player := "Dealer"
+ 	 		v_cur_player := 'Dealer'
   	END IF;
-  	v_deal_result := v_deal_result || v_cur_player || " receives a " ||
-  		v_card_face || " of " || v_card_suit || "." || chr(10);
+  	v_deal_result := v_deal_result || v_cur_player || ' receives a ' ||
+  		v_card_face || ' of ' || v_card_suit || '.' || chr(10);
   		
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ": ERROR IN PROCEDURE deal_card - " || SQLERRM;
+		  err_text = ': ERROR IN PROCEDURE deal_card - ' || SQLERRM;
 		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
 	  	game_pkg.log_error(SQLCODE, errText);
 				
@@ -250,23 +250,23 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   		WHILE player_decision(i)
   		LOOP	
   			IF i < hands_to_deal
-  				v_cur_player := "Player " || i
+  				v_cur_player := 'Player ' || i
   			ELSE
- 	 				v_cur_player := "Dealer"
+ 	 				v_cur_player := 'Dealer'
   			END IF;
-  			v_round_result := v_round_result || v_cur_player || " hits." || chr(10);
+  			v_round_result := v_round_result || v_cur_player || ' hits.' || chr(10);
   			deal_card(i);
   		END LOOP
-  		v_round_result := v_round_result || V_cur_player || " stands." || chr(10);
+  		v_round_result := v_round_result || V_cur_player || ' stands.' || chr(10);
   	END LOOP;
   	
   	FOR i IN 1..v_hands_to_deal
   	LOOP
   		
   		IF i < hands_to_deal
-				v_cur_player := "Player " || i
+				v_cur_player := 'Player ' || i
   		ELSE
- 	 			v_cur_player := "Dealer"
+ 	 			v_cur_player := 'Dealer'
   		END IF;
   		
   		CASE i
@@ -298,7 +298,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   		END
   		
   		v_round_result := v_round_result || v_cur_player || 
-  			" has " || v_loop_value || "." || chr(10);
+  			' has ' || v_loop_value || '.' || chr(10);
   		
   	END LOOP;
   	
@@ -312,14 +312,14 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   		WHERE playerScore = v_winning_score;
   			
   	v_round_result := v_round_result || get_player_name(v_winning_player) ||
-  		" wins, with " || v_winning_score || "!";
+  		' wins, with ' || v_winning_score || '!';
   	
   	return v_round_result;
   	
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ": ERROR IN FUNCTION deal_game - " || SQLERRM;
+		  err_text = ': ERROR IN FUNCTION deal_game - ' || SQLERRM;
 		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
 	  	game_pkg.log_error(SQLCODE, errText);
   	
@@ -350,7 +350,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ": ERROR IN FUNCTION player_decision - " || SQLERRM;
+		  err_text = ': ERROR IN FUNCTION player_decision - ' || SQLERRM;
 		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
 	  	game_pkg.log_error(SQLCODE, errText);
 	  	
@@ -365,7 +365,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	v_return_name VARCHAR2;
   	
   	IF p_player_pos = 5
-  		v_return_name = "Dealer"
+  		v_return_name = 'Dealer'
   	ELSE
   		SELECT accountName
   			INTO v_return_name
@@ -378,7 +378,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   	EXCEPTION
 	  -- Miscellaneous exception handler
 	  WHEN OTHERS THEN
-		  err_text = ": ERROR IN FUNCTION get_player_name - " || SQLERRM;
+		  err_text = ': ERROR IN FUNCTION get_player_name - ' || SQLERRM;
 		  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| errText);
 	  	game_pkg.log_error(SQLCODE, errText);
   END get_player_name;
