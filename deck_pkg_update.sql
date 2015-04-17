@@ -45,17 +45,17 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
     -- Assign proper value based on v_face_value
     v_value := 
       CASE v_face_value   -- Face Values:
-        WHEN 'J' THEN 10;  -- Jack
-        WHEN 'Q' THEN 10;  -- Queen
-        WHEN 'K' THEN 10;  -- King
-        WHEN 'A' THEN 11;    -- Ace
+        WHEN 'J' THEN 10  -- Jack
+        WHEN 'Q' THEN 10  -- Queen
+        WHEN 'K' THEN 10  -- King
+        WHEN 'A' THEN 11    -- Ace
 
     -- If v_face_value is not a letter, 
       -- convert from VARCHAR2 to NUMBER
       -- use v_face_value_temp to work around IN parameter
-        ELSE TO_NUMBER(v_face_value);
-      END CASE;
-    IF v_hand_under_11 = false AND value = 11 THEN
+        ELSE TO_NUMBER(v_face_value)
+      END;
+    IF v_hand_under_11 = false AND v_value = 11 THEN
       v_value := 1;
     END IF;
     RETURN v_value;
@@ -75,19 +75,16 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
   -- The dealer's up card is recorded and shown to the players.
   PROCEDURE deal_cards IS
 
-  v_j_value NUMBER;
-
   BEGIN
       
-    v_deal_result := '';
-    v_round_result := '';
+  v_deal_result := '';
+  v_round_result := '';
 
-    FOR i IN 1..2 LOOP
-    FOR j IN 1..v_hands_to_deal LOOP
-        v_j_value := j;      
-        deal_card(v_j_value);
-      v_round_result := v_round_result || v_deal_result;
-      END LOOP; 
+  FOR i IN 1..2 LOOP
+    FOR j IN 1..v_hands_to_deal LOOP     
+        deal_card(j);
+        v_round_result := v_round_result || v_deal_result;
+    END LOOP; 
   END LOOP; 
   EXCEPTION
     -- Miscellaneous exception handler
@@ -250,7 +247,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
     
   END deal_game;
 
-/*
+
   
   -- FUNCTION player_decision accepts a player number, and makes a decision
   -- whether to hit or stand, based on the score of that player
@@ -281,8 +278,8 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
     DBMS_OUTPUT.PUT_LINE(v_err_code||' '|| v_err_text);
     game_pkg.log_error(v_err_code, v_err_text);
       
-  END player_decision;*/
-  /*
+  END player_decision;
+ 
   -- FUNCTION get_player_name accepts a player position, and returns
   -- the players account name
   FUNCTION get_player_name ( p_player_pos IN NUMBER )
@@ -291,7 +288,7 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
     v_return_name VARCHAR2(25);
   BEGIN
     IF p_player_pos = 5 THEN
-      v_return_name = 'Dealer';
+      v_return_name := 'Dealer';
     ELSE
       SELECT accountName INTO v_return_name
       FROM PlayerGame
@@ -307,6 +304,6 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg IS
     v_err_text := ': ERROR IN FUNCTION get_player_name - ' || SQLERRM;
       DBMS_OUTPUT.PUT_LINE(v_err_code||' '|| v_err_text);
       game_pkg.log_error(v_err_code, v_err_text);
-  END get_player_name; */
+  END get_player_name; 
     
 END deck_pkg;
