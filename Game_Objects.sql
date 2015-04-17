@@ -17,7 +17,7 @@ CREATE TABLE Game (
 
 /* Player table that contains information about players */
 CREATE TABLE Player (
-  accountName VARCHAR22(25) NOT NULL PRIMARY KEY,
+  accountName VARCHAR2(25) NOT NULL PRIMARY KEY,
   password VARCHAR2(10) NOT NULL,
   firstName VARCHAR2(25) NOT NULL,
   lastName VARCHAR2(50) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE Player (
 /* PlayerGame table to hold statistics for a game */
 CREATE TABLE PlayerGame (
   gameID RAW(16) NOT NULL,
-  accountName VARCHAR22(25) NOT NULL,
+  accountName VARCHAR2(25) NOT NULL,
   playerPos INT NOT NULL,
   winner VARCHAR22(2) DEFAULT 'N' NOT NULL,
   CONSTRAINT pk_playerGame PRIMARY KEY (gameID, accountName),
