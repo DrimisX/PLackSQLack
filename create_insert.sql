@@ -34,24 +34,24 @@ CREATE TABLE player_games (
 	);
 
 CREATE TABLE decks (
-	card_face VARCHAR2(10) NOT NULL,
-	card_suit VARCHAR2(10) NOT NULL,
+	card_face VARCHAR2(4) NOT NULL,
+	card_suit VARCHAR2(8) NOT NULL,
 	CONSTRAINT pk_decks PRIMARY KEY (card_face, card_suit),
 	CONSTRAINT chk_decks_suit CHECK (card_suit IN ('Hearts', 'Diamonds', 'Spades', 'Clubs'))
 	);
 
 CREATE TABLE shuffled_decks (
 	position INT NOT NULL,
-	card_face VARCHAR2(10) NOT NULL,
-	card_suit VARCHAR2(10) NOT NULL,
+	card_face VARCHAR2(4) NOT NULL,
+	card_suit VARCHAR2(8) NOT NULL,
 	CONSTRAINT pk_shuffled_decks PRIMARY KEY (position)
 	);
 
 CREATE TABLE error_logs (
 	err_date_time DATE DEFAULT SYSDATE,
 	err_code NUMBER NOT NULL,
-	err_msg VARCHAR2(250) NOT NULL,
-	related_func VARCHAR2(250) NOT NULL,
+	err_msg VARCHAR2(256) NOT NULL,
+	related_func VARCHAR2(256),
 	game_id RAW(16) NOT NULL,
 	CONSTRAINT pk_error_logs PRIMARY KEY (err_date_time),
 	CONSTRAINT fk_error_logs_game_id FOREIGN KEY (game_id)
