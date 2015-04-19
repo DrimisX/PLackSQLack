@@ -52,11 +52,17 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
 
   -- Procedure to Call when an Error Occurs
   -- Log Error in GameErrorLog Table
-  PROCEDURE log_error (p_err_code error_logs.err_code%TYPE, p_err_msg error_logs.err_msg%TYPE) IS					
+  PROCEDURE log_error (p_err_code error_logs.err_code%TYPE, p_err_msg error_logs.err_msg%TYPE) IS
+  v_err_game games.game_id%TYPE;				
   BEGIN
+  IF v_game_id IS NOT NULL THEN
+    v_err_game := v_game_id;
+  ELSE
+    v_err_game := 0;
+  END IF;
 	-- Insert information into GameErrorLog Table
 	INSERT INTO error_logs (err_code, error_msg, game_id)
-	  VALUES (p_err_code, p_err_msg, v_game_id);
+	  VALUES (p_err_code, p_err_msg, v_err_game);
 
   EXCEPTION
 	  -- Miscellaneous exception handler
