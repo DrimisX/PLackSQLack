@@ -10,26 +10,26 @@ CREATE OR REPLACE PACKAGE player_pkg IS
   V_MESSAGE_NOT_EXISTS VARCHAR(40) := 'That user does not exists';
   
   -- A record to hold the player's first name, last name and email
-  TYPE player_type IS RECORD(f_name player.firstName%TYPE, 
-                             l_name player.lastName%TYPE,
-                             pl_email player.email%TYPE); 
+  TYPE player_type IS RECORD(f_name players.first_name%TYPE, 
+                             l_name players.last_name%TYPE,
+                             pl_email players.email%TYPE); 
   -- Create player procedure
   PROCEDURE create_player(
-    p_account player.accountName%TYPE, p_password player.password%TYPE,
-    p_fName player.firstName%TYPE, p_lName player.lastName%TYPE,
-    p_email player.email%TYPE);
+    p_account players.account_name%TYPE, p_password players.password%TYPE,
+    p_fname players.first_name%TYPE, p_lname players.last_name%TYPE,
+    p_email players.email%TYPE);
 	
   -- Get player information function
-  FUNCTION get_player(p_account player.accountName%TYPE) RETURN player_type;
+  FUNCTION get_player(p_account players.account_name%TYPE) RETURN player_type;
   
   -- Update player information procedure
-  PROCEDURE update_player(p_account player.accountName%TYPE, p_player player_type);
+  PROCEDURE update_player(p_account players.account_name%TYPE, p_player player_type);
     
   -- Change password procedure
-  PROCEDURE change_password(p_account player.accountName%TYPE, p_password player.password%TYPE);
+  PROCEDURE change_password(p_account players.account_name%TYPE, p_password players.password%TYPE);
   
   -- Remove player information procedure
-  PROCEDURE delete_player(p_account player.accountName%TYPE);
+  PROCEDURE delete_player(p_account players.account_name%TYPE);
   
 END player_pkg;
 
@@ -39,12 +39,12 @@ END player_pkg;
 CREATE OR REPLACE PACKAGE BODY player_pkg IS
   -- Create player procedure
   PROCEDURE create_player(
-      p_account player.accountName%TYPE, p_password player.password%TYPE,
-      p_fName player.firstName%TYPE, p_lName player.lastName%TYPE,
-      p_email player.email%TYPE) IS    
+      p_account players.account_name%TYPE, p_password players.password%TYPE,
+      p_fname players.first_name%TYPE, p_lname players.last_name%TYPE,
+      p_email players.email%TYPE) IS    
   BEGIN   
-    INSERT INTO Player VALUES
-      (p_account, p_password, p_fName, p_lName, p_email);
+    INSERT INTO players VALUES
+      (p_account, p_password, p_fname, p_lname, p_email);
   EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
       RAISE_APPLICATION_ERROR(V_CODE_EXISTS, V_MESSAGE_EXISTS);
@@ -52,12 +52,12 @@ CREATE OR REPLACE PACKAGE BODY player_pkg IS
   END create_player;
   
   -- Get player function
-  FUNCTION get_player(p_account player.accountName%TYPE) 
+  FUNCTION get_player(p_account players.account_name%TYPE) 
     RETURN player_type IS
 	player_rec player_type;
   BEGIN
-    SELECT firstName, lastName, email INTO player_rec.f_name, player_rec.l_name,
-	  player_rec.pl_email FROM Player WHERE accountName = p_account;
+    SELECT first_name, last_name, email INTO player_rec.f_name, player_rec.l_name,
+	  player_rec.pl_email FROM players WHERE account_name = p_account;
 	RETURN player_rec;
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
@@ -66,16 +66,16 @@ CREATE OR REPLACE PACKAGE BODY player_pkg IS
   END get_player;
   
   -- update_player procedure
-  PROCEDURE update_player(p_account player.accountName%TYPE, p_player player_type) 
+  PROCEDURE update_player(p_account players.account_name%TYPE, p_player player_type) 
   IS
-    v_id player.accountName%TYPE;
+    v_id players.account_name%TYPE;
   BEGIN
     -- Determine if player exists
-    SELECT accountName INTO v_id FROM
-      Player WHERE accountName = p_account;
+    SELECT account_name INTO v_id FROM
+      players WHERE account_name = p_account;
     -- If player exists
-	UPDATE Player SET firstName = p_player.f_name, lastName = p_player.l_name,
-	  email = p_player.pl_email WHERE accountName = p_account;
+	UPDATE players SET first_name = p_players.f_name, last_name = p_players.l_name,
+	  email = p_players.pl_email WHERE account_name = p_account;
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
       RAISE_APPLICATION_ERROR(V_CODE_NOT_EXISTS, V_MESSAGE_NOT_EXISTS);
@@ -83,17 +83,17 @@ CREATE OR REPLACE PACKAGE BODY player_pkg IS
   END update_player;
   
   -- Change password procedure
-  PROCEDURE change_password(p_account player.accountName%TYPE, 
-                            p_password player.password%TYPE) 
+  PROCEDURE change_password(p_account players.account_name%TYPE, 
+                            p_password players.password%TYPE) 
   IS
-  p_first player.firstName%TYPE;
+  p_first players.first_name%TYPE;
   BEGIN
     -- Determine if player exists
-    SELECT firstName INTO p_first FROM
-      Player WHERE accountName = p_account;
+    SELECT first_name INTO p_first FROM
+      players WHERE account_name = p_account;
     -- If player exists
-    UPDATE Player SET password = p_password
-       WHERE accountName = p_account;
+    UPDATE players SET password = p_password
+       WHERE account_name = p_account;
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
       RAISE_APPLICATION_ERROR(V_CODE_NOT_EXISTS,V_MESSAGE_NOT_EXISTS );
@@ -101,14 +101,14 @@ CREATE OR REPLACE PACKAGE BODY player_pkg IS
   END change_password;
   
   -- Delete Player procedure
-  PROCEDURE delete_player(p_account player.accountName%TYPE) IS
-    p_first player.firstName%TYPE;
+  PROCEDURE delete_player(p_account players.account_name%TYPE) IS
+    p_first players.first_name%TYPE;
   BEGIN
     -- Determine if player exists
-    SELECT firstName INTO p_first FROM
-      Player WHERE accountName = p_account;
+    SELECT first_name INTO p_first FROM
+      players WHERE account_name = p_account;
     -- If player exists
-    DELETE FROM Player WHERE accountName = p_account;
+    DELETE FROM players WHERE account_name = p_account;
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
       RAISE_APPLICATION_ERROR(V_CODE_NOT_EXISTS, V_MESSAGE_NOT_EXISTS);
