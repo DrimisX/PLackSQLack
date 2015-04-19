@@ -1,142 +1,147 @@
-DROP TABLE Game;
-DROP TABLE Player;
-DROP TABLE PlayerGame;
-DROP TABLE Deck;
-DROP TABLE ShuffledDeck;
-DROP TABLE GameErrorLog;
+DROP TABLE games;
+DROP TABLE players;
+DROP TABLE player_games;
+DROP TABLE decks;
+DROP TABLE shuffled_decks;
+DROP TABLE error_logs;
 
-CREATE TABLE Game (
-	gameID RAW(16) DEFAULT SYS_GUID() PRIMARY KEY,
-	gameDate DATE DEFAULT SYSDATE
+CREATE TABLE games (
+	game_id RAW(16) DEFAULT SYS_GUID(),
+	game_date DATE DEFAULT SYSDATE,
+	CONSTRAINT pk_games PRIMARY KEY (game_id)
 	);
 
-CREATE TABLE PlayerGame (
-	gameID RAW(16) NOT NULL,
-	accountName VARCHAR22(25) NOT NULL,
-	playerPos INT NOT NULL,
-	winner VARCHAR22(2) DEFAULT 'N' NOT NULL,
-	CONSTRAINT pk_playerGame PRIMARY KEY (gameID, accountName),
-	CONSTRAINT fk_gameID FOREIGN KEY (gameID)
-		REFERENCES Game(gameID) ON DELETE CASCADE,
-	CONSTRAINT fk_accountName FOREIGN KEY (accountName)
-		REFERENCES Player(accountName) ON DELETE CASCADE
-	);
-
-CREATE TABLE Player (
-	accountName VARCHAR22(25) NOT NULL PRIMARY KEY,
+CREATE TABLE players (
+	account_name VARCHAR22(25) NOT NULL,
 	password VARCHAR2(10) NOT NULL,
-	firstName VARCHAR2(25) NOT NULL,
-	lastName VARCHAR2(50) NOT NULL,
+	first_name VARCHAR2(25) NOT NULL,
+	last_name VARCHAR2(50) NOT NULL,
 	email VARCHAR2(60) NOT NULL,
-	CONSTRAINT uc_player UNIQUE (email)
+	CONSTRAINT pk_players PRIMARY KEY (account_name),
+	CONSTRAINT uc_players_email UNIQUE (email)
 	);
 
-CREATE TABLE Deck (
-	cardFace VARCHAR2(10) NOT NULL,
-	cardSuit VARCHAR2(10) NOT NULL,
-	CONSTRAINT deck_pk PRIMARY KEY (cardFace, cardSuit),
-	CONSTRAINT chk_suit CHECK (cardSuit IN ('Hearts', 'Diamonds', 'Spades', 'Clubs'))
+CREATE TABLE player_games (
+	game_id RAW(16) NOT NULL,
+	account_name VARCHAR22(25) NOT NULL,
+	player_pos INT NOT NULL,
+	winner VARCHAR2(2) DEFAULT 'N' NOT NULL,
+	CONSTRAINT pk_player_games PRIMARY KEY (game_id, account_name),
+	CONSTRAINT fk_player_games_game_id FOREIGN KEY (game_id)
+		REFERENCES games(game_id) ON DELETE CASCADE,
+	CONSTRAINT fk_player_games_account_name FOREIGN KEY (account_name)
+		REFERENCES players(account_name) ON DELETE CASCADE
 	);
 
-CREATE TABLE ShuffledDeck (
-	position INT NOT NULL PRIMARY KEY,
-	cardFace VARCHAR2(10) NOT NULL,
-	cardSuit VARCHAR2(10) NOT NULL
+CREATE TABLE decks (
+	card_face VARCHAR2(10) NOT NULL,
+	card_suit VARCHAR2(10) NOT NULL,
+	CONSTRAINT pk_decks PRIMARY KEY (card_face, card_suit),
+	CONSTRAINT chk_decks_suit CHECK (card_suit IN ('Hearts', 'Diamonds', 'Spades', 'Clubs'))
 	);
 
-CREATE TABLE GameErrorLog (
-	errorDateTime DATE DEFAULT SYSDATE PRIMARY KEY,
-	errorCode NUMBER NOT NULL,
-	errorMessage VARCHAR2(250) NOT NULL,
-	relatedFunctionality VARCHAR2(250) NOT NULL,
-	gameID RAW(16) NOT NULL,
-	CONSTRAINT fk_gameID2 FOREIGN KEY (gameID)
-		REFERENCES Game(gameID) ON DELETE CASCADE
+CREATE TABLE shuffled_decks (
+	position INT NOT NULL,
+	card_face VARCHAR2(10) NOT NULL,
+	card_suit VARCHAR2(10) NOT NULL,
+	CONSTRAINT pk_shuffled_decks PRIMARY KEY (position)
+	);
+
+CREATE TABLE error_logs (
+	err_date_time DATE DEFAULT SYSDATE,
+	err_code NUMBER NOT NULL,
+	err_msg VARCHAR2(250) NOT NULL,
+	related_func VARCHAR2(250) NOT NULL,
+	game_id RAW(16) NOT NULL,
+	CONSTRAINT pk_error_logs PRIMARY KEY (err_date_time),
+	CONSTRAINT fk_error_logs_game_id FOREIGN KEY (game_id)
+		REFERENCES games(game_id) ON DELETE CASCADE
 	);
 	
-CREATE TABLE ScoreTracker (
-	playerNum NUMBER NOT NULL PRIMARY KEY,
-	playerScore NUMBER;
+CREATE TABLE score_trackers (
+	player_num NUMBER NOT NULL,
+	player_score NUMBER,
+	CONSTRAINT pk_score_trackers PRIMARY KEY (player_num)
 	);
-
-INSERT ALL
-INTO Deck (cardFace, cardSuit) VALUES('2', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('3', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('4', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('5', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('6', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('7', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('8', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('9', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('10', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('Jack', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('Queen', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('King', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('Ace', 'Hearts')
-INTO Deck (cardFace, cardSuit) VALUES('2', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('3', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('4', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('5', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('6', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('7', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('8', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('9', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('10', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('Jack', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('Queen', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('King', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('Ace', 'Diamonds')
-INTO Deck (cardFace, cardSuit) VALUES('2', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('3', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('4', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('5', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('6', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('7', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('8', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('9', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('10', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('Jack', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('Queen', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('King', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('Ace', 'Spades')
-INTO Deck (cardFace, cardSuit) VALUES('2', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('3', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('4', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('5', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('6', 'Clubs')
-INTO Deck (cardFace, cardSuit)VALUES('7', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('8', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('9', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('10', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('Jack', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('Queen', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('King', 'Clubs')
-INTO Deck (cardFace, cardSuit) VALUES('Ace', 'Clubs')
-SELECT * FROM dual;
-
-
-INSERT ALL
-INTO Player VALUES('Ashika123','sherocks','Ashika','Shallow','ashika@email.com')
-INTO Player VALUES('Jasmyn234','shekicks','Jasmyn','Newton','jasmyn@email.com')
-INTO Player VALUES('Dylan365','hethrows','Dylan','Huculak','dylan@email.com')
-INTO Player VALUES('Dealer4','hetakes','Shannon','Smith','dealer@email.com')
-SELECT * FROM dual;
-
-INSERT ALL
-INTO ScoreTracker VALUES(1);
-INTO ScoreTracker VALUES(2);
-INTO ScoreTracker VALUES(3);
-INTO ScoreTracker VALUES(4);
-INTO ScoreTracker VALUES(5);
-SELECT * FROM dual;
 
 CREATE SEQUENCE seq_id START WITH 1 INCREMENT BY 1 MAXVALUE 52 CYCLE;
 
-CREATE OR REPLACE TRIGGER insert_cards
-BEFORE INSERT ON ShuffledDeck
+CREATE OR REPLACE TRIGGER tr_insert_cards
+BEFORE INSERT ON shuffled_decks
 FOR EACH ROW
 BEGIN
   SELECT seq_id.NEXTVAL
   INTO   :new.position
   FROM   dual;
 END;
+
+INSERT ALL
+INTO decks (card_face, card_suit) VALUES('2', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('3', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('4', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('5', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('6', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('7', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('8', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('9', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('10', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('Jack', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('Queen', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('King', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('Ace', 'Hearts')
+INTO decks (card_face, card_suit) VALUES('2', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('3', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('4', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('5', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('6', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('7', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('8', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('9', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('10', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('Jack', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('Queen', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('King', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('Ace', 'Diamonds')
+INTO decks (card_face, card_suit) VALUES('2', 'Spades')
+INTO decks (card_face, card_suit) VALUES('3', 'Spades')
+INTO decks (card_face, card_suit) VALUES('4', 'Spades')
+INTO decks (card_face, card_suit) VALUES('5', 'Spades')
+INTO decks (card_face, card_suit) VALUES('6', 'Spades')
+INTO decks (card_face, card_suit) VALUES('7', 'Spades')
+INTO decks (card_face, card_suit) VALUES('8', 'Spades')
+INTO decks (card_face, card_suit) VALUES('9', 'Spades')
+INTO decks (card_face, card_suit) VALUES('10', 'Spades')
+INTO decks (card_face, card_suit) VALUES('Jack', 'Spades')
+INTO decks (card_face, card_suit) VALUES('Queen', 'Spades')
+INTO decks (card_face, card_suit) VALUES('King', 'Spades')
+INTO decks (card_face, card_suit) VALUES('Ace', 'Spades')
+INTO decks (card_face, card_suit) VALUES('2', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('3', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('4', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('5', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('6', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('7', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('8', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('9', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('10', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('Jack', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('Queen', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('King', 'Clubs')
+INTO decks (card_face, card_suit) VALUES('Ace', 'Clubs')
+SELECT * FROM dual;
+
+
+INSERT ALL
+INTO players VALUES('Ashika123','sherocks','Ashika','Shallow','ashika@email.com')
+INTO players VALUES('Jasmyn234','shekicks','Jasmyn','Newton','jasmyn@email.com')
+INTO players VALUES('Dylan365','hethrows','Dylan','Huculak','dylan@email.com')
+INTO players VALUES('Dealer4','hetakes','Shannon','Smith','dealer@email.com')
+SELECT * FROM dual;
+
+INSERT ALL
+INTO score_trackers (player_num) VALUES(1)
+INTO score_trackers (player_num) VALUES(2)
+INTO score_trackers (player_num) VALUES(3)
+INTO score_trackers (player_num) VALUES(4)
+INTO score_trackers (player_num) VALUES(5)
+SELECT * FROM dual;
