@@ -1,31 +1,4 @@
--- Package Specification
-CREATE OR REPLACE PACKAGE game_pkg AS
-
-  v_game_id games.game_id%TYPE;
-  v_err_text error_logs.err_msg%TYPE;
-  
-  v_player_count INT;
-  v_verbose_messaging BOOLEAN;
-  
-  v_p1_account_name player_games.account_name%TYPE;
-  v_p2_account_name player_games.account_name%TYPE;
-  v_p3_account_name player_games.account_name%TYPE;
-  v_p4_account_name player_games.account_name%TYPE;
-
-  -- PROCEDURES --
-  PROCEDURE init_proc (p_player_count INT DEFAULT 1, p_verbose_messaging BOOLEAN DEFAULT false);
-  PROCEDURE log_error (p_err_code error_logs.err_code%TYPE, p_err_msg error_logs.err_msg%TYPE);
-  PROCEDURE add_players (
-  	p_p1_account_name player_games.account_name%TYPE,
-  	p_p2_account_name player_games.account_name%TYPE DEFAULT NULL,
-  	p_p3_account_name player_games.account_name%TYPE DEFAULT NULL,
-  	p_p4_account_name player_games.account_name%TYPE DEFAULT NULL
-  	);
-
-  -- FUNCTIONS --
-  FUNCTION get_game_id RETURN games.game_id%TYPE;
-
-END game_pkg;
+/* Created By Jasmyn Newton */
 
 -- Package Body
 CREATE OR REPLACE PACKAGE BODY game_pkg AS
@@ -40,10 +13,10 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
 	v_game_date := SYSDATE;
 
 	-- Create new game in Game Table
-	INSERT INTO games (date) VALUES (v_game_date);
+	INSERT INTO games (game_date) VALUES (v_game_date);
 		
 	-- Set Variables
-	SELECT game_id INTO v_game_id FROM games WHERE game_date;
+	SELECT game_id INTO v_game_id FROM games WHERE game_date = v_game_date;
 	v_player_count := p_player_count;
 
   EXCEPTION
@@ -79,7 +52,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
 					   p_p3_account_name games.account_name%TYPE DEFAULT NULL, 
 					   p_p4_account_name games.account_name%TYPE DEFAULT NULL) IS
 	
-    v_current_insert VARCHAR2;
+    v_current_user VARCHAR2;
   BEGIN
 	-- Iterate through parameters according to # Players
 	FOR i .. v_player_count LOOP
@@ -91,7 +64,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
 	  END CASE;
 	  -- Insert Player into PlayerGame
 	  INSERT INTO player_games (game_id, account_name, player_pos)
-	    VALUES (v_game_id, v_current_insert, i)
+	    VALUES (v_game_id, v_current_user, i)
 	END LOOP;
 
   EXCEPTION
