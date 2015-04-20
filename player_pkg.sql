@@ -35,7 +35,6 @@ END player_pkg;
 
 
 -- Package Body
-
 CREATE OR REPLACE PACKAGE BODY player_pkg IS
   -- Create player procedure
   PROCEDURE create_player(
@@ -74,8 +73,8 @@ CREATE OR REPLACE PACKAGE BODY player_pkg IS
     SELECT account_name INTO v_id FROM
       players WHERE account_name = p_account;
     -- If player exists
-	UPDATE players SET first_name = p_players.f_name, last_name = p_players.l_name,
-	  email = p_players.pl_email WHERE account_name = p_account;
+	UPDATE players SET first_name = p_player.f_name, last_name = p_player.l_name,
+	  email = p_player.pl_email WHERE account_name = p_account;
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
       RAISE_APPLICATION_ERROR(V_CODE_NOT_EXISTS, V_MESSAGE_NOT_EXISTS);
