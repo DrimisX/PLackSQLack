@@ -42,7 +42,7 @@ CREATE TABLE decks (
 
 CREATE TABLE shuffled_decks (
 	position INT NOT NULL,
-	card_face VARCHAR2(4) NOT NULL,
+	card_face VARCHAR2(8) NOT NULL,
 	card_suit VARCHAR2(8) NOT NULL,
 	CONSTRAINT pk_shuffled_decks PRIMARY KEY (position)
 	);
