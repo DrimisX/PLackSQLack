@@ -16,11 +16,11 @@ CREATE OR REPLACE PACKAGE game_pkg AS
   PROCEDURE init_proc (p_player_count INT DEFAULT 1, p_verbose_messaging BOOLEAN DEFAULT false);
   PROCEDURE log_error (p_err_code error_logs.err_code%TYPE, p_err_msg error_logs.err_msg%TYPE);
   PROCEDURE add_players (
-  	p_p1_account_name player_games.account_name%TYPE,
-  	p_p2_account_name player_games.account_name%TYPE DEFAULT NULL,
-  	p_p3_account_name player_games.account_name%TYPE DEFAULT NULL,
-  	p_p4_account_name player_games.account_name%TYPE DEFAULT NULL
-  	);
+    p_p1_account_name player_games.account_name%TYPE,
+    p_p2_account_name player_games.account_name%TYPE DEFAULT NULL,
+    p_p3_account_name player_games.account_name%TYPE DEFAULT NULL,
+    p_p4_account_name player_games.account_name%TYPE DEFAULT NULL
+    );
 
   -- FUNCTIONS --
   FUNCTION get_game_id RETURN games.game_id%TYPE;
@@ -57,16 +57,12 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
   -- Procedure to Call when an Error Occurs
   -- Log Error in GameErrorLog Table
   PROCEDURE log_error (p_err_code error_logs.err_code%TYPE, p_err_msg error_logs.err_msg%TYPE) IS
-  v_err_game games.game_id%TYPE;        
+        
   BEGIN
-  IF v_game_id IS NOT NULL THEN
-    v_err_game := v_game_id;
-  ELSE
-    v_err_game := 0;
-  END IF;
+
   -- Insert information into GameErrorLog Table
   INSERT INTO error_logs (err_code, err_msg, game_id)
-    VALUES (p_err_code, p_err_msg, v_err_game);
+    VALUES (p_err_code, p_err_msg, v_game_id);
 
   EXCEPTION
     -- Miscellaneous exception handler
@@ -75,12 +71,12 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
   END log_error;
 
   -- Add Players to PlayerGame Table based on the Player Count
-  PROCEDURE add_players (p_p1_account_name games.account_name%TYPE, 
-                       p_p2_account_name games.account_name%TYPE DEFAULT NULL, 
-             p_p3_account_name games.account_name%TYPE DEFAULT NULL, 
-             p_p4_account_name games.account_name%TYPE DEFAULT NULL) IS
+  PROCEDURE add_players (p_p1_account_name player_games.account_name%TYPE, 
+                       p_p2_account_name player_games.account_name%TYPE DEFAULT NULL, 
+             p_p3_account_name player_games.account_name%TYPE DEFAULT NULL, 
+             p_p4_account_name player_games.account_name%TYPE DEFAULT NULL) IS
   
-    v_current_insert VARCHAR2;
+    v_current_user player_games.account_name%TYPE;
   BEGIN
   -- Iterate through parameters according to # Players
   FOR i IN 1 .. v_player_count LOOP
@@ -92,7 +88,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
     END CASE;
     -- Insert Player into PlayerGame
     INSERT INTO player_games (game_id, account_name, player_pos)
-      VALUES (v_game_id, v_current_insert, i);
+      VALUES (v_game_id, v_current_user, i);
   END LOOP;
 
   EXCEPTION
@@ -111,12 +107,6 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
     v_current_game_id games.game_id%TYPE;
 
     BEGIN
-
-    IF v_game_id IS NOT NULL THEN
-      v_current_game_id := v_game_id;
-    ELSE
-      v_current_game_id := 0;
-    END IF;
 
     RETURN v_current_game_id;
 
