@@ -4,6 +4,7 @@ DROP TABLE player_games;
 DROP TABLE decks;
 DROP TABLE shuffled_decks;
 DROP TABLE error_logs;
+DROP TABLE score_trackers;
 
 CREATE TABLE games (
 	game_id RAW(16) DEFAULT SYS_GUID(),
