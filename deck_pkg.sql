@@ -52,7 +52,7 @@ CREATE OR REPLACE PACKAGE deck_pkg AS
   FUNCTION get_player_name(p_player_pos NUMBER) 
 	RETURN VARCHAR2;
 		    
-  FUNCTION deal_game( p_deck_pos NUMBER, p_num_players NUMBER ) 
+  FUNCTION deal_game 
 	RETURN VARCHAR2;
   		
   FUNCTION player_decision ( p_player_num NUMBER ) 
@@ -301,7 +301,6 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg AS
   -- FUNCTION deal_game deals out the whole round
   -- and returns a string explaining the results.
   FUNCTION deal_game
-  	( p_deck_pos NUMBER, p_num_players NUMBER )
   	RETURN VARCHAR2
   	IS
 
