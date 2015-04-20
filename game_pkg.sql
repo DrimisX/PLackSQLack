@@ -65,7 +65,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
     v_err_game := 0;
   END IF;
   -- Insert information into GameErrorLog Table
-  INSERT INTO error_logs (err_code, error_msg, game_id)
+  INSERT INTO error_logs (err_code, err_msg, game_id)
     VALUES (p_err_code, p_err_msg, v_err_game);
 
   EXCEPTION
