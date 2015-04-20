@@ -12,7 +12,7 @@ CREATE TABLE games (
 	);
 
 CREATE TABLE players (
-	account_name VARCHAR22(25) NOT NULL,
+	account_name VARCHAR2(25) NOT NULL,
 	password VARCHAR2(10) NOT NULL,
 	first_name VARCHAR2(25) NOT NULL,
 	last_name VARCHAR2(50) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE players (
 
 CREATE TABLE player_games (
 	game_id RAW(16) NOT NULL,
-	account_name VARCHAR22(25) NOT NULL,
+	account_name VARCHAR2(25) NOT NULL,
 	player_pos INT NOT NULL,
 	winner VARCHAR2(2) DEFAULT 'N' NOT NULL,
 	CONSTRAINT pk_player_games PRIMARY KEY (game_id, account_name),
