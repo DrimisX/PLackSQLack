@@ -51,7 +51,7 @@ CREATE TABLE shuffled_decks (
 CREATE TABLE error_logs (
 	err_date_time DATE DEFAULT SYSDATE,
 	err_code NUMBER NOT NULL,
-	err_msg VARCHAR2(256) NOT NULL,
+	err_msg VARCHAR2(3072) NOT NULL,
 	related_func VARCHAR2(256),
 	game_id RAW(16) NOT NULL,
 	CONSTRAINT pk_error_logs PRIMARY KEY (err_date_time),
