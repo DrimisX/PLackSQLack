@@ -47,6 +47,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
   v_player_count := p_player_count;
 
   EXCEPTION
+  WHEN OTHERS THEN
   v_err_text := "ERROR IN PROCEDURE init_proc - " || SQLERRM;
   DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| v_err_text);
     log_error(SQLCODE, v_err_text);
@@ -84,14 +85,14 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
   -- Iterate through parameters according to # Players
   FOR i IN 1 .. v_player_count LOOP
     CASE i
-      WHEN 1 THEN v_current_user := p_p1_account_name
-      WHEN 2 THEN v_current_user := p_p2_account_name
-      WHEN 3 THEN v_current_user := p_p3_account_name
-      WHEN 4 THEN v_current_user := p_p4_account_name
+      WHEN 1 THEN v_current_user := p_p1_account_name;
+      WHEN 2 THEN v_current_user := p_p2_account_name;
+      WHEN 3 THEN v_current_user := p_p3_account_name;
+      WHEN 4 THEN v_current_user := p_p4_account_name;
     END CASE;
     -- Insert Player into PlayerGame
     INSERT INTO player_games (game_id, account_name, player_pos)
-      VALUES (v_game_id, v_current_insert, i)
+      VALUES (v_game_id, v_current_insert, i);
   END LOOP;
 
   EXCEPTION
