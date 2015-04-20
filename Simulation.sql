@@ -49,6 +49,7 @@ DECLARE
   CURSOR deck_cur IS SELECT * FROM ShuffledDeck;
 BEGIN
   DBMS_OUTPUT.PUT_LINE('WELCOME');
+  DBMS_OUTPUT.PUT_LINE('Program by Dylan Huculak, Jasmyn Newton, and Ashika Shallow(0628438)')
   DBMS_OUTPUT.PUT_LINE('');
   shuffle_deck;  -- shuffle the deck
   
