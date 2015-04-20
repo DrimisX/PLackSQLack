@@ -34,7 +34,7 @@ CREATE TABLE player_games (
 	);
 
 CREATE TABLE decks (
-	card_face VARCHAR2(4) NOT NULL,
+	card_face VARCHAR2(8) NOT NULL,
 	card_suit VARCHAR2(8) NOT NULL,
 	CONSTRAINT pk_decks PRIMARY KEY (card_face, card_suit),
 	CONSTRAINT chk_decks_suit CHECK (card_suit IN ('Hearts', 'Diamonds', 'Spades', 'Clubs'))
