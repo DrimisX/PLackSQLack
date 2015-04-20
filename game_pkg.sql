@@ -1,5 +1,33 @@
 /* Created By Jasmyn Newton */
 
+create or replace PACKAGE game_pkg AS
+
+  v_game_id games.game_id%TYPE;
+  v_err_text error_logs.err_msg%TYPE;
+  
+  v_player_count INT;
+  v_verbose_messaging BOOLEAN;
+  
+  v_p1_account_name player_games.account_name%TYPE;
+  v_p2_account_name player_games.account_name%TYPE;
+  v_p3_account_name player_games.account_name%TYPE;
+  v_p4_account_name player_games.account_name%TYPE;
+
+  -- PROCEDURES --
+  PROCEDURE init_proc (p_player_count INT DEFAULT 1, p_verbose_messaging BOOLEAN DEFAULT false);
+  PROCEDURE log_error (p_err_code error_logs.err_code%TYPE, p_err_msg error_logs.err_msg%TYPE);
+  PROCEDURE add_players (
+      p_p1_account_name player_games.account_name%TYPE,
+      p_p2_account_name player_games.account_name%TYPE DEFAULT NULL,
+      p_p3_account_name player_games.account_name%TYPE DEFAULT NULL,
+      p_p4_account_name player_games.account_name%TYPE DEFAULT NULL
+      );
+
+  -- FUNCTIONS --
+  FUNCTION get_game_id RETURN games.game_id%TYPE;
+
+END game_pkg;
+
 -- Package Body
 CREATE OR REPLACE PACKAGE BODY game_pkg AS
 
@@ -20,7 +48,8 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
 	v_player_count := p_player_count;
 
   EXCEPTION
-	v_err_text := "ERROR IN PROCEDURE init_proc - " || SQLERRM;
+    WHEN OTHERS THEN
+	v_err_text := 'ERROR IN PROCEDURE init_proc - ' || SQLERRM;
 	DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| v_err_text);
   	log_error(SQLCODE, v_err_text);
 	
@@ -55,12 +84,12 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
     v_current_user VARCHAR2;
   BEGIN
 	-- Iterate through parameters according to # Players
-	FOR i .. v_player_count LOOP
+	FOR i..v_player_count LOOP
 	  CASE i
-	    WHEN 1 THEN v_current_user := p_p1_account_name
-	    WHEN 2 THEN v_current_user := p_p2_account_name
-	    WHEN 3 THEN v_current_user := p_p3_account_name
-	    WHEN 4 THEN v_current_user := p_p4_account_name
+	    WHEN 1 THEN v_current_user := p_p1_account_name;
+	    WHEN 2 THEN v_current_user := p_p2_account_name;
+	    WHEN 3 THEN v_current_user := p_p3_account_name;
+	    WHEN 4 THEN v_current_user := p_p4_account_name;
 	  END CASE;
 	  -- Insert Player into PlayerGame
 	  INSERT INTO player_games (game_id, account_name, player_pos)
@@ -70,7 +99,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
   EXCEPTION
 	-- Miscellaneous exception handler
 	WHEN OTHERS THEN
-	  v_err_text := "ERROR IN PROCEDURE add_players - " || SQLERRM;
+	  v_err_text := 'ERROR IN PROCEDURE add_players - ' || SQLERRM;
 	  DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| v_err_text);
   	  log_error(SQLCODE, v_err_text);
   END add_players;
@@ -95,7 +124,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
     EXCEPTION
       -- Miscellaneous exception handler
       WHEN OTHERS THEN
-        v_err_text := "ERROR IN FUNCTION get_game_id - " || SQLERRM;
+        v_err_text := 'ERROR IN FUNCTION get_game_id - ' || SQLERRM;
         DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| v_err_text);
         log_error(SQLCODE, v_err_text);
   END get_game_id;
