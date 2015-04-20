@@ -20,8 +20,8 @@ BEGIN
     THEN card_value := 10;
   ELSIF p_cface = 'Ace' THEN
     IF p_score < 11 THEN card_value := 11;
-	ELSE card_value := 1;
-	END IF;
+	  ELSE card_value := 1;
+	  END IF;
   ELSE card_value := TO_NUMBER(p_cface);
   END IF;
   
@@ -58,10 +58,10 @@ BEGIN
   FOR i IN 1..2 LOOP
     FETCH deck_cur INTO v_cardPosition, v_cardFace, v_cardSuit;    -- Deal a card to the player
     v_player_hand := v_cardFace ||' of '|| v_cardSuit || ', '||v_player_hand; -- add the card to the player's hand
-	v_player_score := v_player_score + get_card_value(v_cardFace, v_player_score);   -- add to the player's score
-	FETCH deck_cur INTO v_cardPosition, v_cardFace, v_cardSuit;   -- Deal a card to the dealer
+	  v_player_score := v_player_score + get_card_value(v_cardFace, v_player_score);   -- add to the player's score
+	  FETCH deck_cur INTO v_cardPosition, v_cardFace, v_cardSuit;   -- Deal a card to the dealer
     v_dealer_hand := v_cardFace ||' of '|| v_cardSuit  || ', '||v_dealer_hand;  -- add the card to the dealer's hand
-	v_dealer_score := v_dealer_score + get_card_value(v_cardFace, v_dealer_score);  -- add to the dealer's score
+	  v_dealer_score := v_dealer_score + get_card_value(v_cardFace, v_dealer_score);  -- add to the dealer's score
   END LOOP;
   
   -- Display the player's hand and score
@@ -89,12 +89,12 @@ BEGIN
 	  -- If the player's score becomes greater than 21, he busts and dealer automatically wins
 	  IF v_player_score > 21 THEN
 	    DBMS_OUTPUT.PUT_LINE('');
-		DBMS_OUTPUT.PUT_LINE('Player Busts! House Wins');
+		  DBMS_OUTPUT.PUT_LINE('Player Busts! House Wins');
 	  END IF;
     ELSE
 	  -- If the player's score is between 17 and 21, he rests
       DBMS_OUTPUT.PUT_LINE('Player rests.');
-	END IF;
+	  END IF;
   END IF;
   
   DBMS_OUTPUT.PUT_LINE('');
