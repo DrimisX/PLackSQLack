@@ -48,7 +48,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
 
   EXCEPTION
   WHEN OTHERS THEN
-  v_err_text := "ERROR IN PROCEDURE init_proc - " || SQLERRM;
+  v_err_text := 'ERROR IN PROCEDURE init_proc - ' || SQLERRM;
   DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| v_err_text);
     log_error(SQLCODE, v_err_text);
   
@@ -98,7 +98,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
   EXCEPTION
   -- Miscellaneous exception handler
   WHEN OTHERS THEN
-    v_err_text := "ERROR IN PROCEDURE add_players - " || SQLERRM;
+    v_err_text := 'ERROR IN PROCEDURE add_players - ' || SQLERRM;
     DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| v_err_text);
       log_error(SQLCODE, v_err_text);
   END add_players;
@@ -123,7 +123,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
     EXCEPTION
       -- Miscellaneous exception handler
       WHEN OTHERS THEN
-        v_err_text := "ERROR IN FUNCTION get_game_id - " || SQLERRM;
+        v_err_text := 'ERROR IN FUNCTION get_game_id - ' || SQLERRM;
         DBMS_OUTPUT.PUT_LINE(TO_CHAR(SQLCODE)|| v_err_text);
         log_error(SQLCODE, v_err_text);
   END get_game_id;
