@@ -350,17 +350,17 @@ CREATE OR REPLACE PACKAGE BODY deck_pkg AS
 		  	UPDATE score_trackers
 		    	SET player_score = v_loop_value
 					WHERE player_num = 1;
- 			ELSIF i=2 AND p_player_num < v_hands_to_deal THEN 
+ 			ELSIF i=2 AND i < v_hands_to_deal THEN 
  		  	v_loop_value := v_p2_hand_val;
  		  	UPDATE score_trackers
 		    	SET player_score = v_loop_value
 					WHERE player_num = 2;
-  		ELSIF i=3 AND p_player_num < v_hands_to_deal THEN 
+  		ELSIF i=3 AND i < v_hands_to_deal THEN 
   			v_loop_value := v_p3_hand_val;
   			UPDATE score_trackers
 		  		SET player_score = v_loop_value
 		  		WHERE player_num = 3;
-  		ELSIF i=4 AND p_player_num < v_hands_to_deal THEN 
+  		ELSIF i=4 AND i < v_hands_to_deal THEN 
   			v_loop_value := v_p4_hand_val;
   			UPDATE score_trackers
 		  		SET player_score = v_loop_value
