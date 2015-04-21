@@ -67,7 +67,7 @@ CREATE OR REPLACE PACKAGE BODY game_pkg AS
   EXCEPTION
     -- Miscellaneous exception handler
     WHEN OTHERS THEN
-    RAISE_APPLICATION_ERROR(-29999,'Error Logging Failed. Error not logged.');
+    RAISE_APPLICATION_ERROR(-20999,'Error Logging Failed. Error not logged.');
   END log_error;
 
   -- Add Players to PlayerGame Table based on the Player Count
