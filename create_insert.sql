@@ -1,10 +1,11 @@
-DROP TABLE games;
-DROP TABLE players;
 DROP TABLE player_games;
+DROP TABLE score_trackers;
+DROP TABLE players;
 DROP TABLE decks;
 DROP TABLE shuffled_decks;
 DROP TABLE error_logs;
-DROP TABLE score_trackers;
+DROP TABLE games;
+DROP SEQUENCE seq_id;
 
 CREATE TABLE games (
 	game_id RAW(16) DEFAULT SYS_GUID(),
@@ -129,14 +130,6 @@ INTO decks (card_face, card_suit) VALUES('Jack', 'Clubs')
 INTO decks (card_face, card_suit) VALUES('Queen', 'Clubs')
 INTO decks (card_face, card_suit) VALUES('King', 'Clubs')
 INTO decks (card_face, card_suit) VALUES('Ace', 'Clubs')
-SELECT * FROM dual;
-
-
-INSERT ALL
-INTO players VALUES('Ashika123','sherocks','Ashika','Shallow','ashika@email.com')
-INTO players VALUES('Jasmyn234','shekicks','Jasmyn','Newton','jasmyn@email.com')
-INTO players VALUES('Dylan365','hethrows','Dylan','Huculak','dylan@email.com')
-INTO players VALUES('Dealer4','hetakes','Shannon','Smith','dealer@email.com')
 SELECT * FROM dual;
 
 INSERT ALL
